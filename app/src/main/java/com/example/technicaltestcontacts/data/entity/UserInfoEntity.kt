@@ -1,4 +1,4 @@
-package com.example.technicaltestcontacts.data
+package com.example.technicaltestcontacts.data.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
