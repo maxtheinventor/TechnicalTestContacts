@@ -56,8 +56,8 @@ class MainActivityViewModel @Inject constructor(
 
         }
 
-        changeAllInitialChecksAreDoneValue(true)
         changeShowLandingPageValue(true)
+        changeAllInitialChecksAreDoneValue(true)
 
     }
 

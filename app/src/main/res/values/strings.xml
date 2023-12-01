@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">TT Contacts</string>
+    <string name="closeApp">Close APP</string>
+    <string name="exitApp_U">SALIR DE LA APP</string>
+    <string name="cancel_U">CANCELAR</string>
+    <string name="yes">Si</string>
 </resources>
