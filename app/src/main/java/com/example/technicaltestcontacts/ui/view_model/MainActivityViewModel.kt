@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.technicaltestcontacts.domain.use_cases.user_info_table.CheckIfUserInfoTableIsEmptyUseCase
-import com.example.technicaltestcontacts.domain.use_cases.user_info_table.GetAllUsersInUserInfoTableUseCase
+import com.example.technicaltestcontacts.domain.use_cases.local.user_info_table.CheckIfUserInfoTableIsEmptyUseCaseL
+import com.example.technicaltestcontacts.domain.use_cases.local.user_info_table.GetAllUsersInUserInfoTableUseCaseL
 import com.example.technicaltestcontacts.util.UserInfoGlobal
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -16,8 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    private val checkIfUserInfoTableIsEmptyUseCase: CheckIfUserInfoTableIsEmptyUseCase,
-    private val getAllUsersInUserInfoTableUseCase: GetAllUsersInUserInfoTableUseCase
+    private val checkIfUserInfoTableIsEmptyUseCaseL: CheckIfUserInfoTableIsEmptyUseCaseL,
+    private val getAllUsersInUserInfoTableUseCaseL: GetAllUsersInUserInfoTableUseCaseL
 ) : ViewModel() {
 
     private val _allInitialChecksAreDone = MutableLiveData<Boolean>(false)
@@ -42,7 +42,7 @@ class MainActivityViewModel @Inject constructor(
 
         val job = CoroutineScope(Dispatchers.IO).launch {
 
-            isUserInfoTableEmpty.postValue(checkIfUserInfoTableIsEmptyUseCase.invoke())
+            isUserInfoTableEmpty.postValue(checkIfUserInfoTableIsEmptyUseCaseL.invoke())
 
         }
 
@@ -64,7 +64,7 @@ class MainActivityViewModel @Inject constructor(
 
         val job = CoroutineScope(IO).launch {
 
-            UserInfoGlobal.USER_INFO_ARRAY_LIST = getAllUsersInUserInfoTableUseCase.invoke()
+            UserInfoGlobal.USER_INFO_ARRAY_LIST = getAllUsersInUserInfoTableUseCaseL.invoke()
 
         }
 

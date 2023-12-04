@@ -1,10 +1,10 @@
-package com.example.technicaltestcontacts.data.dao
+package com.example.technicaltestcontacts.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.example.technicaltestcontacts.data.entity.UserInfoEntity
-import com.example.technicaltestcontacts.data.interfaces.UserInfoFunctions
+import com.example.technicaltestcontacts.data.local.entity.UserInfoEntity
+import com.example.technicaltestcontacts.data.local.interfaces.UserInfoFunctions
 
 @Dao
 interface UserInfoDao: UserInfoFunctions {

@@ -4,13 +4,19 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.technicaltestcontacts.R
+import com.example.technicaltestcontacts.domain.use_cases.network.GetRandomUserUseCaseN
 import com.example.technicaltestcontacts.util.UserInfoGlobal.USER_INFO_ARRAY_LIST
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LandingViewModel @Inject constructor() : ViewModel() {
+class LandingViewModel @Inject constructor(private val getRandomUserUseCaseN: GetRandomUserUseCaseN) :
+    ViewModel() {
 
     private val _closeApp = MutableLiveData<Boolean>(false)
     val closeApp: LiveData<Boolean> = _closeApp
@@ -48,6 +54,9 @@ class LandingViewModel @Inject constructor() : ViewModel() {
     private val _showDownloadProgressBar = MutableLiveData<Boolean>(false)
     val showDownloadProgressBar: LiveData<Boolean> = _showDownloadProgressBar
 
+    private val _downloadHasFailed = MutableLiveData<Boolean>(false)
+    val downloadHasFailed: LiveData<Boolean> = _downloadHasFailed
+
     fun initViewSavedContacts() {
 
         if (USER_INFO_ARRAY_LIST.isEmpty()) {
@@ -68,9 +77,9 @@ class LandingViewModel @Inject constructor() : ViewModel() {
 
     }
 
-    fun changeShowDownloadProgressBarValue(newValue: Boolean){
+     fun changeShowDownloadProgressBarValue(newValue: Boolean) {
 
-        _showDownloadProgressBar.value = newValue
+        _showDownloadProgressBar.postValue(newValue)
 
     }
 
@@ -82,8 +91,34 @@ class LandingViewModel @Inject constructor() : ViewModel() {
 
     fun initUserRandomSearch() {
 
-        changeShowDownloadProgressBarValue(true)
-        //TODO:Do random search
+        viewModelScope.launch {
+
+            changeShowDownloadProgressBarValue(true)
+
+            val job = CoroutineScope(Dispatchers.IO).launch {
+                try {
+
+                    val response = getRandomUserUseCaseN.invoke()
+
+                    if (response.isSuccessful) {
+
+                    } else {
+
+                        changeDownloadHasFailedValue(true)
+
+                    }
+
+                } catch (e: Exception) {
+
+                    Log.d("Max", "Download failed")
+                    changeDownloadHasFailedValue(true)
+
+                }
+            }
+
+            job.join()
+
+        }
 
     }
 
@@ -143,7 +178,7 @@ class LandingViewModel @Inject constructor() : ViewModel() {
 
     }
 
-    fun changeErrorInNumberOfContactsToSearchValue(newValue: Boolean) {
+    private fun changeErrorInNumberOfContactsToSearchValue(newValue: Boolean) {
 
         _errorInNumberOfContactsToSearch.value = newValue
 
@@ -158,6 +193,12 @@ class LandingViewModel @Inject constructor() : ViewModel() {
     private fun changeNumberOfContactsToSearchErrorValue(newValue: Int) {
 
         _numberOfContactsToSearchError.value = newValue
+
+    }
+
+    fun changeDownloadHasFailedValue(newValue: Boolean) {
+
+        _downloadHasFailed.postValue(newValue)
 
     }
 

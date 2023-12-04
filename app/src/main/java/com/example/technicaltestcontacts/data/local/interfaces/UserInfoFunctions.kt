@@ -1,6 +1,6 @@
-package com.example.technicaltestcontacts.data.interfaces
+package com.example.technicaltestcontacts.data.local.interfaces
 
-import com.example.technicaltestcontacts.data.entity.UserInfoEntity
+import com.example.technicaltestcontacts.data.local.entity.UserInfoEntity
 
 interface UserInfoFunctions {
 

@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.technicaltestcontacts.R
 import com.example.technicaltestcontacts.ui.compose.basics.alert_dialogs.AppCloseWarning
+import com.example.technicaltestcontacts.ui.compose.basics.alert_dialogs.DownloadHasFailedWarning
 import com.example.technicaltestcontacts.ui.compose.basics.texts.BasicOutlinedText
 import com.example.technicaltestcontacts.ui.theme.ButtonBlue
 import com.example.technicaltestcontacts.ui.theme.ButtonGreen
@@ -54,6 +55,7 @@ fun LandingPage(landingViewModel: LandingViewModel) {
     val showNoSavedContactsToast by landingViewModel.showNoSavedContactsToast.observeAsState()
     val showTheFieldContainsAnErrorToast by landingViewModel.showTheFieldContainsAnErrorToast.observeAsState()
     val showDownloadProgressBar by landingViewModel.showDownloadProgressBar.observeAsState()
+    val downloadHasFailed by landingViewModel.downloadHasFailed.observeAsState()
 
     if (showNoSavedContactsToast!!) {
 
@@ -77,6 +79,13 @@ fun LandingPage(landingViewModel: LandingViewModel) {
             landingViewModel.changeCloseAppValue(it)
 
         })
+
+    }
+
+    if(downloadHasFailed!!){
+
+        landingViewModel.changeShowDownloadProgressBarValue(false)
+        DownloadHasFailedWarning(continueButton = {landingViewModel.changeDownloadHasFailedValue(false)})
 
     }
 

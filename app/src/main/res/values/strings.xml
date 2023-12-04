@@ -20,4 +20,6 @@
     <string name="title_activity_saved_contacts">SavedContacts</string>
     <string name="theFieldContainsAnError">El campo contiene un error</string>
     <string name="downloadingContacts">Descargando contactos</string>
+    <string name="downloadFailed_U">DESCARGA FALLIDA</string>
+    <string name="continue_U">CONTINUAR</string>
 </resources>

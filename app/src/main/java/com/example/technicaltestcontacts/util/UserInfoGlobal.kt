@@ -1,6 +1,6 @@
 package com.example.technicaltestcontacts.util
 
-import com.example.technicaltestcontacts.data.entity.UserInfoEntity
+import com.example.technicaltestcontacts.data.local.entity.UserInfoEntity
 
 object UserInfoGlobal {
 

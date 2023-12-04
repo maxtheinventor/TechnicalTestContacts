@@ -1,4 +1,4 @@
-package com.example.technicaltestcontacts.data.interfaces
+package com.example.technicaltestcontacts.data.local.interfaces
 
 interface BasicUserInfo {
 

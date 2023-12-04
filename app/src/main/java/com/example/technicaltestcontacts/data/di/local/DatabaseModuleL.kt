@@ -1,11 +1,9 @@
-package com.example.technicaltestcontacts.data.di
+package com.example.technicaltestcontacts.data.di.local
 
 import android.content.Context
-import androidx.room.Database
 import androidx.room.Room
-import com.example.technicaltestcontacts.data.dao.UserInfoDao
-import com.example.technicaltestcontacts.data.database.AppDatabase
-import com.example.technicaltestcontacts.data.entity.UserInfoEntity
+import com.example.technicaltestcontacts.data.local.dao.UserInfoDao
+import com.example.technicaltestcontacts.data.local.database.AppDatabase
 import com.example.technicaltestcontacts.util.DatabaseRelatedNames.APP_DATABASE_NAME
 import dagger.Module
 import dagger.Provides
@@ -16,7 +14,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class DatabaseModule {
+class DatabaseModuleL {
 
     @Provides
     fun provideUserInfoDao(appDatabase: AppDatabase): UserInfoDao {

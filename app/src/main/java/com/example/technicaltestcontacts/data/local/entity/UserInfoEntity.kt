@@ -1,8 +1,8 @@
-package com.example.technicaltestcontacts.data.entity
+package com.example.technicaltestcontacts.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.technicaltestcontacts.data.interfaces.BasicUserInfo
+import com.example.technicaltestcontacts.data.local.interfaces.BasicUserInfo
 
 @Entity
 data class UserInfoEntity(
