@@ -1,6 +1,7 @@
 package com.example.technicaltestcontacts.ui.compose.basics.pages
 
 import android.app.Activity
+import android.widget.ProgressBar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +21,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -51,6 +53,7 @@ fun LandingPage(landingViewModel: LandingViewModel) {
     val showAppCloseWarningAlertDialog by landingViewModel.showAppCloseWarningAlertDialog.observeAsState()
     val showNoSavedContactsToast by landingViewModel.showNoSavedContactsToast.observeAsState()
     val showTheFieldContainsAnErrorToast by landingViewModel.showTheFieldContainsAnErrorToast.observeAsState()
+    val showDownloadProgressBar by landingViewModel.showDownloadProgressBar.observeAsState()
 
     if (showNoSavedContactsToast!!) {
 
@@ -59,45 +62,63 @@ fun LandingPage(landingViewModel: LandingViewModel) {
 
     }
 
-    if(showTheFieldContainsAnErrorToast!!){
+    if (showTheFieldContainsAnErrorToast!!) {
 
         ToastUtils.theFieldContainsAnError(LocalContext.current)
         landingViewModel.changeShowTheFieldContainsAnErrorToastValue(newValue = false)
 
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(10.dp)
-    ) {
+    if (showAppCloseWarningAlertDialog!!) {
 
-        if (showAppCloseWarningAlertDialog!!) {
+        AppCloseWarning(closeApp = {
 
-            AppCloseWarning(closeApp = {
-
-                landingViewModel.changeShowAppCloseWarningAlertDialogValue(newValue = false)
-                landingViewModel.changeCloseAppValue(it)
-
-            })
-
-        }
-
-        Header(modifier = Modifier.align(Alignment.TopEnd), closeAppIconClicked = {
-
-            landingViewModel.changeShowAppCloseWarningAlertDialogValue(newValue = true)
+            landingViewModel.changeShowAppCloseWarningAlertDialogValue(newValue = false)
+            landingViewModel.changeCloseAppValue(it)
 
         })
 
-        Body(
-            landingViewModel = landingViewModel,
-            modifier = Modifier.align(Alignment.Center)
-        )
+    }
 
-        Footer(
-            landingViewModel = landingViewModel,
-            modifier = Modifier.align(Alignment.BottomCenter)
-        )
+    if (showDownloadProgressBar!!) {
+
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+
+            CircularProgressIndicator(color = Color.Black, modifier = Modifier.size(100.dp))
+            Spacer(modifier = Modifier.size(50.dp))
+            Text(text = stringResource(id = R.string.downloadingContacts))
+
+        }
+
+    } else {
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(10.dp)
+        ) {
+
+            Header(modifier = Modifier.align(Alignment.TopEnd), closeAppIconClicked = {
+
+                landingViewModel.changeShowAppCloseWarningAlertDialogValue(newValue = true)
+
+            })
+
+            Body(
+                landingViewModel = landingViewModel,
+                modifier = Modifier.align(Alignment.Center)
+            )
+
+            Footer(
+                landingViewModel = landingViewModel,
+                modifier = Modifier.align(Alignment.BottomCenter)
+            )
+
+        }
 
     }
 
@@ -175,9 +196,9 @@ private fun ContactSearch(landingViewModel: LandingViewModel) {
                 })
 
             Spacer(modifier = Modifier.size(36.dp))
-            SearchButton(searchButtonClicked = {landingViewModel.initUserSearchWithNumberCriteria()})
+            SearchButton(searchButtonClicked = { landingViewModel.initUserSearchWithNumberCriteria() })
             Spacer(modifier = Modifier.size(20.dp))
-            RandomSearchButton(randomSearchButtonClicked = {landingViewModel.initUserRandomSearch()})
+            RandomSearchButton(randomSearchButtonClicked = { landingViewModel.initUserRandomSearch() })
             Spacer(modifier = Modifier.size(24.dp))
 
         }
@@ -289,7 +310,7 @@ private fun NumberOfContactsToSearch(
 private fun SearchButton(searchButtonClicked: () -> Unit) {
 
     Button(
-        onClick = { searchButtonClicked }, colors = ButtonDefaults.buttonColors(
+        onClick = { searchButtonClicked() }, colors = ButtonDefaults.buttonColors(
             containerColor = ButtonBlue
         )
     ) {
@@ -310,7 +331,7 @@ private fun SearchButton(searchButtonClicked: () -> Unit) {
 private fun RandomSearchButton(randomSearchButtonClicked: () -> Unit) {
 
     Button(
-        onClick = { randomSearchButtonClicked }, colors = ButtonDefaults.buttonColors(
+        onClick = { randomSearchButtonClicked() }, colors = ButtonDefaults.buttonColors(
             containerColor = ButtonGreen
         )
     ) {

@@ -1,5 +1,6 @@
 package com.example.technicaltestcontacts.ui.view_model
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -31,14 +32,21 @@ class LandingViewModel @Inject constructor() : ViewModel() {
 
     //----------------------------------------------------------------------------------------------
 
+    //Toasts
+
     private val _showTheFieldContainsAnErrorToast = MutableLiveData<Boolean>(false)
     val showTheFieldContainsAnErrorToast: LiveData<Boolean> = _showTheFieldContainsAnErrorToast
 
     private val _showNoSavedContactsToast = MutableLiveData<Boolean>(false)
     val showNoSavedContactsToast: LiveData<Boolean> = _showNoSavedContactsToast
 
+    //----------------------------------------------------------------------------------------------
+
     private val _showSavedContactsPage = MutableLiveData<Boolean>(false)
     val showSavedContactsPage: LiveData<Boolean> = _showSavedContactsPage
+
+    private val _showDownloadProgressBar = MutableLiveData<Boolean>(false)
+    val showDownloadProgressBar: LiveData<Boolean> = _showDownloadProgressBar
 
     fun initViewSavedContacts() {
 
@@ -54,9 +62,15 @@ class LandingViewModel @Inject constructor() : ViewModel() {
 
     }
 
-    fun changeShowTheFieldContainsAnErrorToastValue(newValue: Boolean){
+    fun changeShowTheFieldContainsAnErrorToastValue(newValue: Boolean) {
 
         _showTheFieldContainsAnErrorToast.value = newValue
+
+    }
+
+    fun changeShowDownloadProgressBarValue(newValue: Boolean){
+
+        _showDownloadProgressBar.value = newValue
 
     }
 
@@ -68,37 +82,44 @@ class LandingViewModel @Inject constructor() : ViewModel() {
 
     fun initUserRandomSearch() {
 
+        changeShowDownloadProgressBarValue(true)
+        //TODO:Do random search
 
     }
 
     private fun doUserSearchWithNumberCriteriaChecks(numberToDoCheckOn: String) {
 
-        val pattern = Regex("^\\d+\$")
         changeErrorInNumberOfContactsToSearchValue(true)
 
-        if (numberToDoCheckOn.isEmpty()) {
+        try {
 
-            changeNumberOfContactsToSearchErrorValue(newValue = R.string.fieldCantBeEmpty)
-            changeShowTheFieldContainsAnErrorToastValue(true)
+            if (numberToDoCheckOn.isEmpty()) {
 
-        } else if (numberToDoCheckOn.toInt() == 0) {
+                changeNumberOfContactsToSearchErrorValue(newValue = R.string.fieldCantBeEmpty)
+                changeShowTheFieldContainsAnErrorToastValue(true)
 
-            changeNumberOfContactsToSearchErrorValue(newValue = R.string.fieldCantBeZero)
-            changeShowTheFieldContainsAnErrorToastValue(true)
+            } else if (numberToDoCheckOn.toInt() == 0) {
 
-        } else if (numberToDoCheckOn.toInt() > 20) {
+                changeNumberOfContactsToSearchErrorValue(newValue = R.string.fieldCantBeZero)
+                changeShowTheFieldContainsAnErrorToastValue(true)
 
-            changeNumberOfContactsToSearchErrorValue(newValue = R.string.fieldCantBeAbove20)
-            changeShowTheFieldContainsAnErrorToastValue(true)
+            } else if (numberToDoCheckOn.toInt() > 20) {
 
-        } else if (!numberToDoCheckOn.matches(pattern)) {
+                changeNumberOfContactsToSearchErrorValue(newValue = R.string.fieldCantBeAbove20)
+                changeShowTheFieldContainsAnErrorToastValue(true)
+
+            } else {
+
+                changeErrorInNumberOfContactsToSearchValue(false)
+                changeShowDownloadProgressBarValue(true)
+                //TODO: Do search
+
+            }
+
+        } catch (e: Exception) {
 
             changeNumberOfContactsToSearchErrorValue(newValue = R.string.fieldCanOnlyContainNumbers)
             changeShowTheFieldContainsAnErrorToastValue(true)
-
-        } else {
-
-            changeErrorInNumberOfContactsToSearchValue(false)
 
         }
 
