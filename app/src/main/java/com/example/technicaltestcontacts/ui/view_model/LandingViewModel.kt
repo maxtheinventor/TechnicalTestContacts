@@ -6,12 +6,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.technicaltestcontacts.R
+import com.example.technicaltestcontacts.data.network.response.random_user.RandomUser
 import com.example.technicaltestcontacts.domain.use_cases.network.GetRandomUserUseCaseN
-import com.example.technicaltestcontacts.util.UserInfoGlobal.USER_INFO_ARRAY_LIST
+import com.example.technicaltestcontacts.util.UserInfoGlobal.DOWNLOADED_USER_DATA
+import com.example.technicaltestcontacts.util.UserInfoGlobal.SAVED_USER_INFO_ARRAY_LIST
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import retrofit2.Response
 import javax.inject.Inject
 
 @HiltViewModel
@@ -57,15 +60,18 @@ class LandingViewModel @Inject constructor(private val getRandomUserUseCaseN: Ge
     private val _downloadHasFailed = MutableLiveData<Boolean>(false)
     val downloadHasFailed: LiveData<Boolean> = _downloadHasFailed
 
+    private val _goToViewDownloadedContacts = MutableLiveData<Boolean>(false)
+    val goToViewDownloadedContacts: LiveData<Boolean> = _goToViewDownloadedContacts
+
     fun initViewSavedContacts() {
 
-        if (USER_INFO_ARRAY_LIST.isEmpty()) {
+        if (SAVED_USER_INFO_ARRAY_LIST.isEmpty()) {
 
-            changeShowNoSavedContactsToastValue(true)
+            changeShowNoSavedContactsToastValue(newValue = true)
 
         } else {
 
-            _showSavedContactsPage.value = true
+            changeShowSavedContactsPageValue(newValue = true)
 
         }
 
@@ -77,7 +83,7 @@ class LandingViewModel @Inject constructor(private val getRandomUserUseCaseN: Ge
 
     }
 
-     fun changeShowDownloadProgressBarValue(newValue: Boolean) {
+    fun changeShowDownloadProgressBarValue(newValue: Boolean) {
 
         _showDownloadProgressBar.postValue(newValue)
 
@@ -102,6 +108,11 @@ class LandingViewModel @Inject constructor(private val getRandomUserUseCaseN: Ge
 
                     if (response.isSuccessful) {
 
+                        saveResponseInGlobalValue(response = response)
+                        changeShowDownloadProgressBarValue(newValue = false)
+                        changeShowSavedContactsPageValue(newValue = false)
+                        changeGoToViewDownloadedContactsValue(newValue = true)
+
                     } else {
 
                         changeDownloadHasFailedValue(true)
@@ -110,8 +121,12 @@ class LandingViewModel @Inject constructor(private val getRandomUserUseCaseN: Ge
 
                 } catch (e: Exception) {
 
-                    Log.d("Max", "Download failed")
-                    changeDownloadHasFailedValue(true)
+                   //  Log.d("Max", "Download failed")
+                    //changeDownloadHasFailedValue(true)
+
+                    changeShowDownloadProgressBarValue(newValue = false)
+                    changeShowSavedContactsPageValue(newValue = false)
+                    changeGoToViewDownloadedContactsValue(newValue = true)
 
                 }
             }
@@ -199,6 +214,24 @@ class LandingViewModel @Inject constructor(private val getRandomUserUseCaseN: Ge
     fun changeDownloadHasFailedValue(newValue: Boolean) {
 
         _downloadHasFailed.postValue(newValue)
+
+    }
+
+    private fun saveResponseInGlobalValue(response: Response<RandomUser>) {
+
+        DOWNLOADED_USER_DATA = response
+
+    }
+
+    private fun changeShowSavedContactsPageValue(newValue: Boolean) {
+
+        _showSavedContactsPage.postValue(newValue)
+
+    }
+
+    fun changeGoToViewDownloadedContactsValue(newValue: Boolean) {
+
+        _goToViewDownloadedContacts.postValue(newValue)
 
     }
 

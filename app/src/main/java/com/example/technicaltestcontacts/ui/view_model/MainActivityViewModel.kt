@@ -64,7 +64,7 @@ class MainActivityViewModel @Inject constructor(
 
         val job = CoroutineScope(IO).launch {
 
-            UserInfoGlobal.USER_INFO_ARRAY_LIST = getAllUsersInUserInfoTableUseCaseL.invoke()
+            UserInfoGlobal.SAVED_USER_INFO_ARRAY_LIST = getAllUsersInUserInfoTableUseCaseL.invoke()
 
         }
 

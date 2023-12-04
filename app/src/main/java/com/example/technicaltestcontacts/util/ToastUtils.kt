@@ -20,6 +20,12 @@ class ToastUtils {
 
         }
 
+        fun downloadCompleted(context: Context) {
+
+            Toast.makeText(context,R.string.downloadCompleted,Toast.LENGTH_SHORT).show()
+
+        }
+
     }
 
 }

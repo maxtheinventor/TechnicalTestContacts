@@ -1,8 +1,11 @@
 package com.example.technicaltestcontacts.ui.view
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
@@ -51,4 +54,5 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
 
