@@ -6,42 +6,39 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.example.technicaltestcontacts.ui.theme.TechnicalTestContactsTheme
+import com.example.technicaltestcontacts.ui.compose.basics.pages.LandingPage
+import com.example.technicaltestcontacts.ui.view.ui.theme.TechnicalTestContactsTheme
+import com.example.technicaltestcontacts.ui.view_model.LandingViewModel
 import com.example.technicaltestcontacts.ui.view_model.MainActivityViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class Landing : ComponentActivity() {
 
-    private val mainActivityViewModel by viewModels<MainActivityViewModel>()
-
+    private val landingViewModel by viewModels<LandingViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        installSplashScreen().apply {
-            setKeepOnScreenCondition {
-                mainActivityViewModel.allInitialChecksAreDone.value == false
-            }
-        }
-
         setContent {
             TechnicalTestContactsTheme {
+
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = Color.White
                 ) {
 
-                    val showLandingPage by mainActivityViewModel.showLandingPage.observeAsState()
+                    val showSavedContactsPage by landingViewModel.showSavedContactsPage.observeAsState()
 
-                    if (showLandingPage!!) {
+                    LandingPage(landingViewModel = landingViewModel)
 
-                        val intent: Intent = Intent(this, Landing::class.java)
+                    if (showSavedContactsPage!!) {
+
+                        val intent: Intent = Intent(this, SavedContacts::class.java)
                         startActivity(intent)
 
                     }
@@ -51,4 +48,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-

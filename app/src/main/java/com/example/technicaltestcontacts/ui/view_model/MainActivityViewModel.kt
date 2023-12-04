@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.technicaltestcontacts.data.repository.UserInfoRepository
 import com.example.technicaltestcontacts.domain.use_cases.user_info_table.CheckIfUserInfoTableIsEmptyUseCase
 import com.example.technicaltestcontacts.domain.use_cases.user_info_table.GetAllUsersInUserInfoTableUseCase
 import com.example.technicaltestcontacts.util.UserInfoGlobal
@@ -79,7 +78,7 @@ class MainActivityViewModel @Inject constructor(
 
     }
 
-    private fun changeAllInitialChecksAreDoneValue(newValue: Boolean){
+    private fun changeAllInitialChecksAreDoneValue(newValue: Boolean) {
 
         _allInitialChecksAreDone.value = newValue
 

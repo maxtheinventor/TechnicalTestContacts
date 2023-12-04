@@ -16,9 +16,21 @@
         android:theme="@style/Theme.TechnicalTestContacts"
         tools:targetApi="31">
         <activity
+            android:name=".ui.view.SavedContacts"
+            android:exported="false"
+            android:label="@string/title_activity_saved_contacts"
+            android:theme="@style/Theme.TechnicalTestContacts" />
+        <activity
+            android:name=".ui.view.Landing"
+            android:exported="false"
+            android:label="@string/title_activity_landing"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.TechnicalTestContacts" />
+        <activity
             android:name=".ui.view.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.TechnicalTestContacts">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

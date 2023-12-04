@@ -4,4 +4,19 @@
     <string name="exitApp_U">SALIR DE LA APP</string>
     <string name="cancel_U">CANCELAR</string>
     <string name="yes">Si</string>
+    <string name="contactsSearch_U">BUSCADOR CONTACTOS</string>
+    <string name="email">Email</string>
+    <string name="error">Error</string>
+    <string name="numContactsToSearch">Nº contactos a buscar</string>
+    <string name="search_U">BUSCAR</string>
+    <string name="randomSearch_U">RANDOM SEARCH</string>
+    <string name="viewSavedContacts_U">VER CONTACTOS GUARDADOS</string>
+    <string name="noContactsSavedInDb">No hay contactos guardados</string>
+    <string name="fieldCantBeEmpty">El campo no puede estar vacio</string>
+    <string name="fieldCantBeZero">El valor no puede ser 0</string>
+    <string name="fieldCantBeAbove20">El valor no puede estar por encima de 20</string>
+    <string name="fieldCanOnlyContainNumbers">El campo solo puede contener numeros</string>
+    <string name="title_activity_landing">Landing</string>
+    <string name="title_activity_saved_contacts">SavedContacts</string>
+    <string name="theFieldContainsAnError">El campo contiene un error</string>
 </resources>
