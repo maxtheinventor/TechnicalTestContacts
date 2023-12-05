@@ -32,4 +32,8 @@
     <string name="deleteFieldContent">Delete field content</string>
     <string name="emailHasWrongFormat">Formato incorrecto de email</string>
     <string name="theFieldsCantContainErrors">Los campos no pueden contener errores</string>
+    <string name="therAreNoContactsWithThatSearchCriteria">No hay contactos con ese criterio de busqueda</string>
+    <string name="fieldCantContainNumbers">El campo no puede contener numeros</string>
+    <string name="userImage">Imagen usuario</string>
+    <string name="saveContactsInApp">Guardar contactos en la APP</string>
 </resources>

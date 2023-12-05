@@ -1,15 +1,21 @@
 package com.example.technicaltestcontacts.ui.view_model
 
-import android.util.Patterns
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.technicaltestcontacts.R
+import com.example.technicaltestcontacts.data.network.response.random_user.ResultRandomUser
+import com.example.technicaltestcontacts.util.UserInfoGlobal.DOWNLOADED_USER_DATA
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class ViewDownloadedContactsViewModel @Inject constructor() : ViewModel() {
+
+    private val _blurDp = MutableLiveData<Dp>(0.dp)
+    val blurDp: LiveData<Dp> = _blurDp
 
     private val _goBack = MutableLiveData<Boolean>(false)
     val goBack: LiveData<Boolean> = _goBack
@@ -52,6 +58,11 @@ class ViewDownloadedContactsViewModel @Inject constructor() : ViewModel() {
     private val _filtersAreCorrect = MutableLiveData<Boolean>(false)
     val filtersAreCorrect: LiveData<Boolean> = _filtersAreCorrect
 
+    var filteredContactList: MutableList<ResultRandomUser> = arrayListOf()
+
+    private val _showDropDownMenu = MutableLiveData<Boolean>(false)
+    val showDropDownMenu: LiveData<Boolean> = _showDropDownMenu
+
     fun changeGoBackValue(newValue: Boolean) {
 
         _goBack.value = newValue
@@ -65,8 +76,16 @@ class ViewDownloadedContactsViewModel @Inject constructor() : ViewModel() {
         if (!showSearchOptions.value!!) {
 
             changeListHasFilters(showSearchOptions.value!!)
+            eliminateAllErrorsFromSearchFields()
 
         }
+
+    }
+
+    private fun eliminateAllErrorsFromSearchFields() {
+
+        changeErrorInNameToSearchValue(false)
+        changeErrorInEmailToSearchValue(false)
 
     }
 
@@ -80,15 +99,54 @@ class ViewDownloadedContactsViewModel @Inject constructor() : ViewModel() {
 
         if (checkIfFiltersAreCorrect()) {
 
-            checkIfDownloadedContactsContainSearchedCriteria()
+            changeFiltersAreCorrectValue(checkIfDownloadedContactsContainSearchedCriteria())
 
         }
 
     }
 
-    private fun checkIfDownloadedContactsContainSearchedCriteria(){
+    private fun checkIfDownloadedContactsContainSearchedCriteria(): Boolean {
 
+        var result: Boolean = false
 
+        if (filteredContactList.isNotEmpty()) {
+
+            filteredContactList.clear()
+
+        }
+
+        for (contact in DOWNLOADED_USER_DATA.body()!!.results) {
+
+            var name = contact.name.first.toLowerCase().trim()
+            var email = contact.email.toLowerCase().trim()
+
+            var nameToSearch = nameToSearch.value!!.toLowerCase().trim()
+            var emailToSearch = emailToSearch.value!!.toLowerCase().trim()
+
+            var nameCriteria = nameToSearch.length <= name.length && name.substring(
+                0,
+                nameToSearch.length
+            ) == nameToSearch
+            var emailCriteria = emailToSearch.length <= email.length && email.substring(
+                0,
+                emailToSearch.length
+            ) == emailToSearch
+
+            if (nameCriteria && emailCriteria) {
+
+                filteredContactList.add(contact)
+
+            }
+
+        }
+
+        if (filteredContactList.isNotEmpty()) {
+
+            result = true
+
+        }
+
+        return result
 
     }
 
@@ -110,16 +168,22 @@ class ViewDownloadedContactsViewModel @Inject constructor() : ViewModel() {
 
         }
 
+        if (_nameToSearch.value!!.isEmpty() && _emailToSearch.value!!.isEmpty()) {
+
+            changeListHasFilters(false)
+
+        }
+
         return result
 
     }
 
     private fun doNameToSearchFieldChecks() {
 
-        if (nameToSearch.value!!.isEmpty()) {
+        if (nameToSearch.value!!.isNotEmpty() && nameToSearch.value!!.any { it.isDigit() }) {
 
             changeErrorInNameToSearchValue(true)
-            changeNameToSearchErrorValue(R.string.fieldCantBeEmpty)
+            changeNameToSearchErrorValue(R.string.fieldCantContainNumbers)
             changeShowFieldErrorToastValue(true)
 
         } else {
@@ -132,23 +196,7 @@ class ViewDownloadedContactsViewModel @Inject constructor() : ViewModel() {
 
     private fun doEmailToSearchFieldChecks() {
 
-        if (emailToSearch.value!!.isEmpty()) {
-
-            changeErrorInEmailToSearchValue(true)
-            changeEmailToSearchErrorValue(R.string.fieldCantBeEmpty)
-            changeShowFieldErrorToastValue(true)
-
-        } else if (!Patterns.EMAIL_ADDRESS.matcher(emailToSearch.value!!).matches()) {
-
-            changeErrorInEmailToSearchValue(true)
-            changeEmailToSearchErrorValue(R.string.emailHasWrongFormat)
-            changeShowFieldErrorToastValue(true)
-
-        } else {
-
-            changeErrorInEmailToSearchValue(false)
-
-        }
+        //Maybe in the future I want to Add some criteria
 
     }
 
@@ -203,6 +251,36 @@ class ViewDownloadedContactsViewModel @Inject constructor() : ViewModel() {
     fun changeShowFieldErrorToastValue(newValue: Boolean) {
 
         _showFieldErrorToast.value = newValue
+
+    }
+
+    fun changeFiltersAreCorrectValue(newValue: Boolean) {
+
+        _filtersAreCorrect.value = newValue
+
+    }
+
+    fun changeShowDropDownMenuValue() {
+
+        if (!_showDropDownMenu.value!!) {
+            changeBlurDpValue(12.dp)
+
+        } else {
+            changeBlurDpValue(0.dp)
+
+        }
+
+        _showDropDownMenu.value = !_showDropDownMenu.value!!
+
+    }
+
+    private fun changeBlurDpValue(newValue: Dp) {
+
+        _blurDp.value = newValue
+
+    }
+
+    fun saveContactsInApp() {
 
     }
 
