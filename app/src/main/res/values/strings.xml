@@ -26,4 +26,6 @@
     <string name="downloadCompleted">¡Descarga completada!</string>
     <string name="goBack">Ir atrás</string>
     <string name="contacts_U">CONTACTOS</string>
+    <string name="contactsPageActions">Contacts page actions</string>
+    <string name="contactSearchOptions">Contact search options</string>
 </resources>
