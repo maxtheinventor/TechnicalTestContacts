@@ -32,7 +32,8 @@ fun BasicOutlinedText(
     singleLine: Boolean,
     imeAction: ImeAction,
     isError: Boolean,
-    errorMessage: Int
+    errorMessage: Int,
+    modifier: Modifier = Modifier
 ) {
 
     OutlinedTextField(
@@ -46,7 +47,7 @@ fun BasicOutlinedText(
         },
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = imeAction),
         shape = RoundedCornerShape(25.dp),
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
             .padding(top = 10.dp),

@@ -1,10 +1,12 @@
 package com.example.technicaltestcontacts.ui.compose.basics.pages
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -23,6 +25,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
@@ -37,6 +40,7 @@ import com.example.technicaltestcontacts.data.network.response.random_user.Resul
 import com.example.technicaltestcontacts.ui.compose.basics.texts.BasicOutlinedText
 import com.example.technicaltestcontacts.ui.theme.ButtonBlue
 import com.example.technicaltestcontacts.ui.view_model.ViewDownloadedContactsViewModel
+import com.example.technicaltestcontacts.util.ToastUtils
 import com.example.technicaltestcontacts.util.UserInfoGlobal.DOWNLOADED_USER_DATA
 
 @Composable
@@ -44,6 +48,14 @@ fun ViewDownloadedContactsPage(
     viewDownloadedContactsViewModel: ViewDownloadedContactsViewModel
 ) {
 
+    val showFieldErrorToast by viewDownloadedContactsViewModel.showFieldErrorToast.observeAsState()
+
+    if (showFieldErrorToast!!) {
+
+        ToastUtils.theFieldsCantContainErrors(LocalContext.current)
+        viewDownloadedContactsViewModel.changeShowFieldErrorToastValue(newValue = false)
+
+    }
 
     Column(
         modifier = Modifier
@@ -55,7 +67,7 @@ fun ViewDownloadedContactsPage(
             viewDownloadedContactsViewModel = viewDownloadedContactsViewModel
         )
 
-        Body()
+        Body(viewDownloadedContactsViewModel = viewDownloadedContactsViewModel)
 
     }
 
@@ -83,8 +95,12 @@ private fun Header(
                         it
                     )
                 },
-                emailToSearchOnTextChanged = {},
-                doSearch = {}
+                emailToSearchOnTextChanged = {
+                    viewDownloadedContactsViewModel.onEmailToSearchChange(
+                        it
+                    )
+                },
+                doSearch = { viewDownloadedContactsViewModel.doFilterSearch() }
             )
 
         }
@@ -190,29 +206,59 @@ fun SearchFields(
 
     Column {
 
-        BasicOutlinedText(
-            text = nameToSearch!!,
-            onTextChanged = nameToSearchOnTextChanged,
-            labelText = R.string.name,
-            keyboardType = KeyboardType.Text,
-            mainColor = Color.Black,
-            singleLine = true,
-            imeAction = ImeAction.Next,
-            isError = errorInNameToSearch!!,
-            errorMessage = nameToSearchError!!
-        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
 
-        BasicOutlinedText(
-            text = emailToSearch!!,
-            onTextChanged = emailToSearchOnTextChanged,
-            labelText = R.string.email,
-            keyboardType = KeyboardType.Email,
-            mainColor = Color.Black,
-            singleLine = true,
-            imeAction = ImeAction.Done,
-            isError = errorInEmailToSearch!!,
-            errorMessage = emailToSearchError!!
-        )
+            BasicOutlinedText(
+                text = nameToSearch!!,
+                onTextChanged = nameToSearchOnTextChanged,
+                labelText = R.string.name,
+                keyboardType = KeyboardType.Text,
+                mainColor = Color.Black,
+                singleLine = true,
+                imeAction = ImeAction.Next,
+                isError = errorInNameToSearch!!,
+                errorMessage = nameToSearchError!!,
+                modifier = Modifier.weight(0.9f)
+
+            )
+
+            Icon(
+                painter = painterResource(id = R.drawable.delete_black),
+                contentDescription = stringResource(id = R.string.deleteFieldContent),
+                tint = Color.Unspecified,
+                modifier = Modifier
+                    .clickable { viewDownloadedContactsViewModel.clearNameToSearchField() }
+                    .weight(0.1f)
+
+            )
+
+        }
+
+        Row(verticalAlignment = Alignment.CenterVertically) {
+
+            BasicOutlinedText(
+                text = emailToSearch!!,
+                onTextChanged = emailToSearchOnTextChanged,
+                labelText = R.string.email,
+                keyboardType = KeyboardType.Email,
+                mainColor = Color.Black,
+                singleLine = true,
+                imeAction = ImeAction.Done,
+                isError = errorInEmailToSearch!!,
+                errorMessage = emailToSearchError!!,
+                modifier = Modifier.weight(0.9f)
+            )
+
+            Icon(
+                painter = painterResource(id = R.drawable.delete_black),
+                contentDescription = stringResource(id = R.string.deleteFieldContent),
+                tint = Color.Unspecified,
+                modifier = Modifier
+                    .clickable { viewDownloadedContactsViewModel.clearEmailToSearchField() }
+                    .weight(0.1f)
+            )
+
+        }
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
 
@@ -242,13 +288,24 @@ fun SearchFields(
 }
 
 @Composable
-private fun Body() {
+private fun Body(viewDownloadedContactsViewModel: ViewDownloadedContactsViewModel) {
+
+    val listHasFilters by viewDownloadedContactsViewModel.listHasFilters.observeAsState()
 
     LazyColumn() {
 
         items(DOWNLOADED_USER_DATA.body()!!.results, key = { it.id.value }) { userData ->
 
-            ItemContact(userData)
+            if (listHasFilters!!) {
+
+
+            }
+             else {
+
+                ItemContact(userData)
+
+            }
+
 
         }
 

@@ -20,6 +20,12 @@ class ToastUtils {
 
         }
 
+        fun theFieldsCantContainErrors(context: Context){
+
+            Toast.makeText(context,R.string.theFieldsCantContainErrors,Toast.LENGTH_SHORT).show()
+
+        }
+
         fun downloadCompleted(context: Context) {
 
             Toast.makeText(context,R.string.downloadCompleted,Toast.LENGTH_SHORT).show()

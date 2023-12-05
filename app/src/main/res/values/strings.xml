@@ -29,4 +29,7 @@
     <string name="contactsPageActions">Contacts page actions</string>
     <string name="contactSearchOptions">Contact search options</string>
     <string name="name">Nombre</string>
+    <string name="deleteFieldContent">Delete field content</string>
+    <string name="emailHasWrongFormat">Formato incorrecto de email</string>
+    <string name="theFieldsCantContainErrors">Los campos no pueden contener errores</string>
 </resources>
