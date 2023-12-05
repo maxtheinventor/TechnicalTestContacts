@@ -1,9 +1,7 @@
 package com.example.technicaltestcontacts.ui.compose.basics.pages
 
-import android.util.Log
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,9 +11,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,16 +23,19 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.technicaltestcontacts.R
 import com.example.technicaltestcontacts.data.network.response.random_user.ResultRandomUser
+import com.example.technicaltestcontacts.ui.compose.basics.texts.BasicOutlinedText
+import com.example.technicaltestcontacts.ui.theme.ButtonBlue
 import com.example.technicaltestcontacts.ui.view_model.ViewDownloadedContactsViewModel
 import com.example.technicaltestcontacts.util.UserInfoGlobal.DOWNLOADED_USER_DATA
 
@@ -75,7 +77,14 @@ private fun Header(
         if (showSearchOptions!!) {
 
             SearchFields(
-                viewDownloadedContactsViewModel = viewDownloadedContactsViewModel
+                viewDownloadedContactsViewModel = viewDownloadedContactsViewModel,
+                nameToSearchOnTextChanged = {
+                    viewDownloadedContactsViewModel.onNameToSearchChange(
+                        it
+                    )
+                },
+                emailToSearchOnTextChanged = {},
+                doSearch = {}
             )
 
         }
@@ -165,11 +174,70 @@ fun TopBar(
 
 @Composable
 fun SearchFields(
-    viewDownloadedContactsViewModel: ViewDownloadedContactsViewModel
+    viewDownloadedContactsViewModel: ViewDownloadedContactsViewModel,
+    nameToSearchOnTextChanged: (String) -> Unit,
+    emailToSearchOnTextChanged: (String) -> Unit,
+    doSearch: () -> Unit
 ) {
 
+    val nameToSearch by viewDownloadedContactsViewModel.nameToSearch.observeAsState()
+    val errorInNameToSearch by viewDownloadedContactsViewModel.errorInNameToSearch.observeAsState()
+    val nameToSearchError by viewDownloadedContactsViewModel.nameToSearchError.observeAsState()
+
+    val emailToSearch by viewDownloadedContactsViewModel.emailToSearch.observeAsState()
+    val errorInEmailToSearch by viewDownloadedContactsViewModel.errorInEmailToSearch.observeAsState()
+    val emailToSearchError by viewDownloadedContactsViewModel.emailToSearchError.observeAsState()
+
+    Column {
+
+        BasicOutlinedText(
+            text = nameToSearch!!,
+            onTextChanged = nameToSearchOnTextChanged,
+            labelText = R.string.name,
+            keyboardType = KeyboardType.Text,
+            mainColor = Color.Black,
+            singleLine = true,
+            imeAction = ImeAction.Next,
+            isError = errorInNameToSearch!!,
+            errorMessage = nameToSearchError!!
+        )
+
+        BasicOutlinedText(
+            text = emailToSearch!!,
+            onTextChanged = emailToSearchOnTextChanged,
+            labelText = R.string.email,
+            keyboardType = KeyboardType.Email,
+            mainColor = Color.Black,
+            singleLine = true,
+            imeAction = ImeAction.Done,
+            isError = errorInEmailToSearch!!,
+            errorMessage = emailToSearchError!!
+        )
+
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
 
 
+            Button(
+                onClick = { doSearch() },
+                modifier = Modifier.padding(20.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = ButtonBlue
+                )
+            ) {
+
+                Text(
+                    text = stringResource(id = R.string.search_U),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 15.sp,
+                    color = Color.White,
+                    modifier = Modifier.padding(start = 20.dp, end = 20.dp)
+                )
+
+            }
+
+        }
+
+    }
 
 }
 

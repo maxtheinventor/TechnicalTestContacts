@@ -308,7 +308,7 @@ private fun NumberOfContactsToSearch(
         keyboardType = KeyboardType.Number,
         mainColor = Color.Black,
         singleLine = true,
-        imeAction = ImeAction.Next,
+        imeAction = ImeAction.Done,
         isError = numberOfContactsToSearchHasError,
         errorMessage = errorMessage
     )
