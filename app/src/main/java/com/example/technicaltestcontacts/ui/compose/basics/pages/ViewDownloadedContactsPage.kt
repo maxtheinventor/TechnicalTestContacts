@@ -1,6 +1,8 @@
 package com.example.technicaltestcontacts.ui.compose.basics.pages
 
+import android.util.Log
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +11,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,6 +24,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
@@ -25,24 +33,27 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.technicaltestcontacts.R
+import com.example.technicaltestcontacts.data.network.response.random_user.ResultRandomUser
 import com.example.technicaltestcontacts.ui.view_model.ViewDownloadedContactsViewModel
+import com.example.technicaltestcontacts.util.UserInfoGlobal.DOWNLOADED_USER_DATA
 
 @Composable
 fun ViewDownloadedContactsPage(
     viewDownloadedContactsViewModel: ViewDownloadedContactsViewModel
 ) {
 
-    Box(
+
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(10.dp)
     ) {
 
         Header(
-            modifier = Modifier.align(Alignment.TopStart),
             viewDownloadedContactsViewModel = viewDownloadedContactsViewModel
         )
-        Body(modifier = Modifier.align(Alignment.Center))
+
+        Body()
 
     }
 
@@ -50,7 +61,6 @@ fun ViewDownloadedContactsPage(
 
 @Composable
 private fun Header(
-    modifier: Modifier,
     viewDownloadedContactsViewModel: ViewDownloadedContactsViewModel
 ) {
 
@@ -59,14 +69,12 @@ private fun Header(
     Column {
 
         TopBar(
-            modifier = modifier,
             viewDownloadedContactsViewModel = viewDownloadedContactsViewModel
         )
 
         if (showSearchOptions!!) {
 
             SearchFields(
-                modifier = modifier,
                 viewDownloadedContactsViewModel = viewDownloadedContactsViewModel
             )
 
@@ -78,22 +86,22 @@ private fun Header(
 
 @Composable
 fun TopBar(
-    modifier: Modifier,
     viewDownloadedContactsViewModel: ViewDownloadedContactsViewModel
 ) {
 
-    var painterResourceForSearchButton = if (viewDownloadedContactsViewModel.showSearchOptions.value!!) {
+    var painterResourceForSearchButton =
+        if (viewDownloadedContactsViewModel.showSearchOptions.value!!) {
 
-        R.drawable.close_red
+            R.drawable.close_red
 
-    } else {
+        } else {
 
-        R.drawable.contact_search_black
+            R.drawable.contact_search_black
 
-    }
+        }
 
     Row(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -109,7 +117,7 @@ fun TopBar(
                 painter = painterResource(id = R.drawable.arrow_back_black),
                 contentDescription = stringResource(id = R.string.goBack),
                 tint = Color.Unspecified,
-                modifier = modifier.clickable {
+                modifier = Modifier.clickable {
                     viewDownloadedContactsViewModel.changeGoBackValue(
                         true
                     )
@@ -137,7 +145,7 @@ fun TopBar(
                 painter = painterResource(id = painterResourceForSearchButton),
                 contentDescription = stringResource(id = R.string.contactSearchOptions),
                 tint = Color.Unspecified,
-                modifier = modifier.clickable { viewDownloadedContactsViewModel.changeShowSearchOptionsValue() }
+                modifier = Modifier.clickable { viewDownloadedContactsViewModel.changeShowSearchOptionsValue() }
             )
 
             Spacer(modifier = Modifier.size(15.dp))
@@ -146,7 +154,7 @@ fun TopBar(
                 painter = painterResource(id = R.drawable.three_vertical_buttons_black),
                 contentDescription = stringResource(id = R.string.contactsPageActions),
                 tint = Color.Unspecified,
-                modifier = modifier
+                modifier = Modifier
             )
 
         }
@@ -157,15 +165,48 @@ fun TopBar(
 
 @Composable
 fun SearchFields(
-    modifier: Modifier,
     viewDownloadedContactsViewModel: ViewDownloadedContactsViewModel
 ) {
+
+
 
 
 }
 
 @Composable
-private fun Body(modifier: Modifier) {
+private fun Body() {
 
+    LazyColumn() {
+
+        items(DOWNLOADED_USER_DATA.body()!!.results, key = { it.id.value }) { userData ->
+
+            ItemContact(userData)
+
+        }
+
+    }
+
+
+}
+
+@Composable
+fun ItemContact(resultRandomUser: ResultRandomUser) {
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        elevation = CardDefaults.cardElevation(8.dp)
+    ) {
+
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+
+            Text(
+                text = resultRandomUser.name.first, modifier = Modifier.weight(1f)
+            )
+
+        }
+
+    }
 
 }

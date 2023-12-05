@@ -121,12 +121,8 @@ class LandingViewModel @Inject constructor(private val getRandomUserUseCaseN: Ge
 
                 } catch (e: Exception) {
 
-                   //  Log.d("Max", "Download failed")
-                    //changeDownloadHasFailedValue(true)
-
-                    changeShowDownloadProgressBarValue(newValue = false)
-                    changeShowSavedContactsPageValue(newValue = false)
-                    changeGoToViewDownloadedContactsValue(newValue = true)
+                    Log.d("Max", "Download failed")
+                    changeDownloadHasFailedValue(true)
 
                 }
             }
