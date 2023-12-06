@@ -6,8 +6,8 @@ import com.example.technicaltestcontacts.data.local.interfaces.BasicUserInfo
 
 @Entity
 data class UserInfoEntity(
-    @PrimaryKey
-    var id:Int,
+    @PrimaryKey(autoGenerate = true)
+    var id:Int = 0,
     override var firstName: String,
     override var lastName: String,
     override var age: String,

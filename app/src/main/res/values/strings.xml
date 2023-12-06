@@ -23,7 +23,7 @@
     <string name="downloadFailed_U">DESCARGA FALLIDA</string>
     <string name="continue_U">CONTINUAR</string>
     <string name="title_activity_view_downloaded_contacts">ViewDownloadedContacts</string>
-    <string name="downloadCompleted">¡Descarga completada!</string>
+    <string name="downloadCompleted_E">¡Descarga completada!</string>
     <string name="goBack">Ir atrás</string>
     <string name="contacts_U">CONTACTOS</string>
     <string name="contactsPageActions">Contacts page actions</string>
@@ -36,4 +36,7 @@
     <string name="fieldCantContainNumbers">El campo no puede contener numeros</string>
     <string name="userImage">Imagen usuario</string>
     <string name="saveContactsInApp">Guardar contactos en la APP</string>
+    <string name="savingContactsInApp">Guardando contactos en la APP</string>
+    <string name="contactsSaved_E">¡Contactos guardados!</string>
+    <string name="savingError_U">ERROR GUARDADO</string>
 </resources>

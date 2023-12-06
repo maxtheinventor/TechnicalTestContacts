@@ -5,14 +5,27 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.technicaltestcontacts.R
+import com.example.technicaltestcontacts.data.local.entity.UserInfoEntity
 import com.example.technicaltestcontacts.data.network.response.random_user.ResultRandomUser
+import com.example.technicaltestcontacts.domain.use_cases.local.user_info_table.InsertUserInUserInfoTableUseCaseL
+import com.example.technicaltestcontacts.util.UserInfoGlobal
 import com.example.technicaltestcontacts.util.UserInfoGlobal.DOWNLOADED_USER_DATA
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
-class ViewDownloadedContactsViewModel @Inject constructor() : ViewModel() {
+class ViewDownloadedContactsViewModel @Inject constructor(
+    private val insertUserInUserInfoTableUseCaseL: InsertUserInUserInfoTableUseCaseL
+) : ViewModel() {
 
     private val _blurDp = MutableLiveData<Dp>(0.dp)
     val blurDp: LiveData<Dp> = _blurDp
@@ -22,6 +35,40 @@ class ViewDownloadedContactsViewModel @Inject constructor() : ViewModel() {
 
     private val _showSearchOptions = MutableLiveData<Boolean>(false)
     val showSearchOptions: LiveData<Boolean> = _showSearchOptions
+
+    private val _listHasFilters = MutableLiveData<Boolean>(false)
+    val listHasFilters: LiveData<Boolean> = _listHasFilters
+
+    private val _filtersAreCorrect = MutableLiveData<Boolean>(false)
+    val filtersAreCorrect: LiveData<Boolean> = _filtersAreCorrect
+
+    var filteredContactList: MutableList<ResultRandomUser> = arrayListOf()
+
+    private val _showDropDownMenu = MutableLiveData<Boolean>(false)
+    val showDropDownMenu: LiveData<Boolean> = _showDropDownMenu
+
+    private val _contactsSaved = MutableLiveData<Boolean>(false)
+
+    // DIALOGS
+
+    private val _showSavingContactsInAppDialog = MutableLiveData<Boolean>(false)
+    val showSavingContactsInAppDialog: LiveData<Boolean> = _showSavingContactsInAppDialog
+
+    private val _showCantCantSaveTheSameContactsAgainWarning = MutableLiveData<Boolean>(false)
+    val showCantCantSaveTheSameContactsAgainWarning: LiveData<Boolean> =
+        _showCantCantSaveTheSameContactsAgainWarning
+
+    //----------------------------------------------------------------------------------------------
+
+    // TOAST
+
+    private val _showFieldErrorToast = MutableLiveData<Boolean>(false)
+    val showFieldErrorToast: LiveData<Boolean> = _showFieldErrorToast
+
+    private val _showSavedContactsSuccessfullyToast = MutableLiveData<Boolean>(false)
+    val showSavedContactsSuccessfullyToast: LiveData<Boolean> = _showSavedContactsSuccessfullyToast
+
+    //----------------------------------------------------------------------------------------------
 
     // SEARCH FIELDS
 
@@ -48,20 +95,6 @@ class ViewDownloadedContactsViewModel @Inject constructor() : ViewModel() {
     val emailToSearchError: LiveData<Int> = _emailToSearchError
 
     //----------------------------------------------------------------------------------------------
-
-    private val _showFieldErrorToast = MutableLiveData<Boolean>(false)
-    val showFieldErrorToast: LiveData<Boolean> = _showFieldErrorToast
-
-    private val _listHasFilters = MutableLiveData<Boolean>(false)
-    val listHasFilters: LiveData<Boolean> = _listHasFilters
-
-    private val _filtersAreCorrect = MutableLiveData<Boolean>(false)
-    val filtersAreCorrect: LiveData<Boolean> = _filtersAreCorrect
-
-    var filteredContactList: MutableList<ResultRandomUser> = arrayListOf()
-
-    private val _showDropDownMenu = MutableLiveData<Boolean>(false)
-    val showDropDownMenu: LiveData<Boolean> = _showDropDownMenu
 
     fun changeGoBackValue(newValue: Boolean) {
 
@@ -254,7 +287,7 @@ class ViewDownloadedContactsViewModel @Inject constructor() : ViewModel() {
 
     }
 
-    fun changeFiltersAreCorrectValue(newValue: Boolean) {
+    private fun changeFiltersAreCorrectValue(newValue: Boolean) {
 
         _filtersAreCorrect.value = newValue
 
@@ -262,25 +295,100 @@ class ViewDownloadedContactsViewModel @Inject constructor() : ViewModel() {
 
     fun changeShowDropDownMenuValue() {
 
-        if (!_showDropDownMenu.value!!) {
-            changeBlurDpValue(12.dp)
-
-        } else {
-            changeBlurDpValue(0.dp)
-
-        }
-
-        _showDropDownMenu.value = !_showDropDownMenu.value!!
+        _showDropDownMenu.postValue(!_showDropDownMenu.value!!)
 
     }
 
-    private fun changeBlurDpValue(newValue: Dp) {
+    fun changeBlurDpValue() {
 
-        _blurDp.value = newValue
+        if (!_showDropDownMenu.value!!) {
+
+            _blurDp.postValue(12.dp)
+
+        } else {
+            _blurDp.postValue(0.dp)
+
+        }
 
     }
 
     fun saveContactsInApp() {
+
+        if (!_contactsSaved.value!!) {
+
+            changeShowSavingContactsInAppDialogValue()
+
+            viewModelScope.launch(Dispatchers.IO) {
+
+                delay(1500)
+
+                val job = CoroutineScope(Dispatchers.IO).launch {
+
+                    for (contact in UserInfoGlobal.DOWNLOADED_USER_DATA.body()!!.results) {
+
+                        val instant = Instant.parse(contact.registered.date)
+                        val dateTime = instant.atZone(ZoneId.of("UTC")).toLocalDateTime()
+                        val formattedDate =
+                            dateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+
+                        var userInfoEntity = UserInfoEntity(
+                            firstName = contact.name.first,
+                            lastName = contact.name.last,
+                            age = contact.registered.age.toString(),
+                            gender = contact.gender,
+                            registerDate = formattedDate,
+                            phoneNumber = contact.phone,
+                            latitude = contact.location.coordinates.latitude,
+                            longitude = contact.location.coordinates.longitude
+                        )
+
+                        insertUserInUserInfoTableUseCaseL.invoke(userInfoEntity = userInfoEntity)
+
+                    }
+
+                }
+
+                job.join()
+
+                changeContactsSavedValue(newValue = true)
+                changeBlurDpValue()
+                changeShowDropDownMenuValue()
+                changeShowSavingContactsInAppDialogValue()
+                changeShowSavedContactsSuccessfullyToastValue(newValue = true)
+
+            }
+
+        } else {
+
+            changeBlurDpValue()
+            changeShowDropDownMenuValue()
+            changeShowCantCantSaveTheSameContactsAgainWarningValue(true)
+
+        }
+
+    }
+
+    private fun changeShowSavingContactsInAppDialogValue() {
+
+        _showSavingContactsInAppDialog.postValue(!_showSavingContactsInAppDialog.value!!)
+
+    }
+
+    fun changeShowSavedContactsSuccessfullyToastValue(newValue: Boolean) {
+
+        _showSavedContactsSuccessfullyToast.postValue(newValue)
+
+    }
+
+    private fun changeContactsSavedValue(newValue: Boolean) {
+
+        _contactsSaved.postValue(newValue)
+
+    }
+
+    fun changeShowCantCantSaveTheSameContactsAgainWarningValue(newValue: Boolean){
+
+        _showCantCantSaveTheSameContactsAgainWarning.value = newValue
 
     }
 

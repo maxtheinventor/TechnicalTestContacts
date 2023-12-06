@@ -28,7 +28,13 @@ class ToastUtils {
 
         fun downloadCompleted(context: Context) {
 
-            Toast.makeText(context,R.string.downloadCompleted,Toast.LENGTH_SHORT).show()
+            Toast.makeText(context,R.string.downloadCompleted_E,Toast.LENGTH_SHORT).show()
+
+        }
+
+        fun contactsSavedSuccessfully(context: Context){
+
+            Toast.makeText(context,R.string.contactsSaved_E,Toast.LENGTH_SHORT).show()
 
         }
 

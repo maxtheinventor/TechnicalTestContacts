@@ -2,6 +2,7 @@ package com.example.technicaltestcontacts.ui.compose.basics.pages
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +16,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -41,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.technicaltestcontacts.R
 import com.example.technicaltestcontacts.data.network.response.random_user.ResultRandomUser
+import com.example.technicaltestcontacts.ui.compose.basics.alert_dialogs.CantSaveTheSameContactsAgainWarning
 import com.example.technicaltestcontacts.ui.compose.basics.texts.BasicOutlinedText
 import com.example.technicaltestcontacts.ui.theme.ButtonBlue
 import com.example.technicaltestcontacts.ui.view_model.ViewDownloadedContactsViewModel
@@ -53,8 +58,10 @@ fun ViewDownloadedContactsPage(
 ) {
 
     val blurDp by viewDownloadedContactsViewModel.blurDp.observeAsState()
-
     val showFieldErrorToast by viewDownloadedContactsViewModel.showFieldErrorToast.observeAsState()
+    val showSavedContactsSuccessfullyToast by viewDownloadedContactsViewModel.showSavedContactsSuccessfullyToast.observeAsState()
+    val showSavingContactsInAppDialog by viewDownloadedContactsViewModel.showSavingContactsInAppDialog.observeAsState()
+    val showCantCantSaveTheSameContactsAgainWarning by viewDownloadedContactsViewModel.showCantCantSaveTheSameContactsAgainWarning.observeAsState()
 
     if (showFieldErrorToast!!) {
 
@@ -63,17 +70,80 @@ fun ViewDownloadedContactsPage(
 
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .blur(blurDp!!)
-    ) {
+    if (showSavedContactsSuccessfullyToast!!) {
 
-        Header(
-            viewDownloadedContactsViewModel = viewDownloadedContactsViewModel
-        )
+        ToastUtils.contactsSavedSuccessfully(LocalContext.current)
+        viewDownloadedContactsViewModel.changeShowSavedContactsSuccessfullyToastValue(newValue = false)
 
-        Body(viewDownloadedContactsViewModel = viewDownloadedContactsViewModel)
+    }
+
+    if (showCantCantSaveTheSameContactsAgainWarning!!) {
+
+        CantSaveTheSameContactsAgainWarning(continueButton = {
+            viewDownloadedContactsViewModel.changeShowCantCantSaveTheSameContactsAgainWarningValue(
+                newValue = false
+            )
+        })
+
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+
+        if (showSavingContactsInAppDialog!!) {
+
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+
+                Card(
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color.Black,
+                    )
+                ) {
+
+                    Column(
+                        modifier = Modifier.padding(20.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+
+                        CircularProgressIndicator(
+                            color = Color.White,
+                            modifier = Modifier.size(60.dp)
+                        )
+
+                        Spacer(modifier = Modifier.size(30.dp))
+
+                        Text(
+                            text = stringResource(id = R.string.savingContactsInApp),
+                            color = Color.White
+                        )
+
+                    }
+
+                }
+
+            }
+
+        } else {
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .blur(blurDp!!)
+            ) {
+
+                Header(
+                    viewDownloadedContactsViewModel = viewDownloadedContactsViewModel
+                )
+
+                Body(viewDownloadedContactsViewModel = viewDownloadedContactsViewModel)
+
+            }
+
+        }
 
     }
 
@@ -189,13 +259,17 @@ fun TopBar(
                 contentDescription = stringResource(id = R.string.contactsPageActions),
                 tint = Color.Unspecified,
                 modifier = Modifier.clickable {
+                    viewDownloadedContactsViewModel.changeBlurDpValue()
                     viewDownloadedContactsViewModel.changeShowDropDownMenuValue()
                 }
             )
 
             DropdownMenu(
                 expanded = showDropDownMenu!!,
-                onDismissRequest = { viewDownloadedContactsViewModel.changeShowDropDownMenuValue() },
+                onDismissRequest = {
+                    viewDownloadedContactsViewModel.changeBlurDpValue()
+                    viewDownloadedContactsViewModel.changeShowDropDownMenuValue()
+                },
             ) {
 
                 DropdownMenuItem(
@@ -203,7 +277,6 @@ fun TopBar(
                     onClick = {
 
                         viewDownloadedContactsViewModel.saveContactsInApp()
-                        viewDownloadedContactsViewModel.changeShowDropDownMenuValue()
 
                     }
                 )
