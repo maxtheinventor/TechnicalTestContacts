@@ -461,6 +461,8 @@ fun ItemContact(
     viewDownloadedContactsViewModel: ViewDownloadedContactsViewModel
 ) {
 
+    var fullName = resultRandomUser.name.first + " " + resultRandomUser.name.last
+
     Row(
         Modifier
             .fillMaxWidth()
@@ -491,7 +493,7 @@ fun ItemContact(
         Column(modifier = Modifier.weight(0.75f)) {
 
             Text(
-                text = resultRandomUser.name.first,
+                text = fullName,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             )

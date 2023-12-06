@@ -44,4 +44,10 @@
     <string name="contactDetailsPageActions">Contact detail page actions</string>
     <string name="cameraIconContactDetailsPage">Camera icon contact details page</string>
     <string name="editIconContactDetailsPage">Edit icon contact details page</string>
+    <string name="firstAndLastName">Nombre y apellidos</string>
+    <string name="gender">Género</string>
+    <string name="dateOfRegistration">Fecha de registro</string>
+    <string name="telephone">Teléfono</string>
+    <string name="location">Dirección</string>
+    <string name="mapImage">Map image</string>
 </resources>

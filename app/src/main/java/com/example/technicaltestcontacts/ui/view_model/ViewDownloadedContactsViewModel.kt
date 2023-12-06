@@ -379,7 +379,8 @@ class ViewDownloadedContactsViewModel @Inject constructor(
             phoneNumber = contact.phone,
             latitude = contact.location.coordinates.latitude,
             longitude = contact.location.coordinates.longitude,
-            imageLarge = contact.picture.large
+            imageLarge = contact.picture.large,
+            email = contact.email
         )
 
         return result

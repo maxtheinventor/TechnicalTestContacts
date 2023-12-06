@@ -6,6 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.example.technicaltestcontacts.data.local.entity.UserInfoEntity
@@ -29,6 +31,14 @@ class ContactDetail : ComponentActivity() {
                     color = Color.White
                 ) {
 
+                    val goBack by contactDetailViewModel.goBack.observeAsState()
+
+                    if (goBack!!) {
+
+                        finish()
+
+                    }
+
                     initialActions()
 
                     ContactDetailPage(contactDetailViewModel)
@@ -39,16 +49,17 @@ class ContactDetail : ComponentActivity() {
         }
     }
 
-    private fun initialActions(){
+    private fun initialActions() {
 
         getExtras()
         contactDetailViewModel.prepareContactDetailDataList()
 
     }
 
-    private fun getExtras(){
+    private fun getExtras() {
 
-        var userInfoEntity: UserInfoEntity = intent.getSerializableExtra(ExtraNameUtils.CONTACT_TO_SHOW_DETAIL) as UserInfoEntity
+        var userInfoEntity: UserInfoEntity =
+            intent.getSerializableExtra(ExtraNameUtils.CONTACT_TO_SHOW_DETAIL) as UserInfoEntity
         contactDetailViewModel.changeUserToShowInfoOfValue(userInfoEntity)
 
     }

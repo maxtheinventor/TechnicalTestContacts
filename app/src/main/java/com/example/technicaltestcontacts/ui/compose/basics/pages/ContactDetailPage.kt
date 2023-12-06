@@ -3,15 +3,17 @@ package com.example.technicaltestcontacts.ui.compose.basics.pages
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,15 +31,16 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.AsyncImage
 import com.example.technicaltestcontacts.R
+import com.example.technicaltestcontacts.data.model.ContactDetailData
 import com.example.technicaltestcontacts.ui.view_model.ContactDetailViewModel
-
 
 @Composable
 fun ContactDetailPage(contactDetailViewModel: ContactDetailViewModel) {
 
-    Box() {
+    Column() {
 
-        Header(contactDetailViewModel)
+        Header(contactDetailViewModel = contactDetailViewModel)
+        Body(contactDetailViewModel = contactDetailViewModel)
 
     }
 
@@ -46,18 +49,15 @@ fun ContactDetailPage(contactDetailViewModel: ContactDetailViewModel) {
 @Composable
 private fun Header(contactDetailViewModel: ContactDetailViewModel) {
 
-    ConstraintLayout(Modifier.fillMaxSize()) {
+    ConstraintLayout(Modifier) {
 
-        val (backgroundImage, userImage, headerInfoAndButtons,cameraIcon,editIcon) = createRefs()
+        val (backgroundImage, userImage, headerInfoAndButtons, cameraIcon, editIcon, contactDetailList) = createRefs()
 
-        val topGuideAsyncImage = createGuidelineFromTop(0.35f)
+        val topGuideAsyncImage = createGuidelineFromTop(0.75f)
         val startGuideAsyncImage = createGuidelineFromStart(0.05f)
-
-        val topGuideContactDetailsHeaderIcons = createGuidelineFromTop(0.42f)
 
         val startGuideCameraIcon = createGuidelineFromStart(0.74f)
         val startGuideEditIcon = createGuidelineFromStart(0.87f)
-
 
         val topGuideForHeaderInfoAndButtons = createGuidelineFromTop(0.02f)
         val startGuideForHeaderInfoAndButtons = createGuidelineFromStart(0.02f)
@@ -96,7 +96,7 @@ private fun Header(contactDetailViewModel: ContactDetailViewModel) {
                     contentDescription = stringResource(id = R.string.goBack),
                     tint = Color.Unspecified,
                     modifier = Modifier.clickable {
-
+                        contactDetailViewModel.changeGoBackValue(true)
                     }
                 )
 
@@ -155,12 +155,13 @@ private fun Header(contactDetailViewModel: ContactDetailViewModel) {
             contentDescription = stringResource(id = R.string.cameraIconContactDetailsPage),
             tint = Color.Unspecified,
             modifier = Modifier
+                .padding(top = 10.dp)
                 .clickable {
 
                 }
                 .constrainAs(cameraIcon) {
 
-                    top.linkTo(topGuideContactDetailsHeaderIcons)
+                    top.linkTo(backgroundImage.bottom)
                     start.linkTo(startGuideCameraIcon)
 
                 }
@@ -171,23 +172,106 @@ private fun Header(contactDetailViewModel: ContactDetailViewModel) {
             contentDescription = stringResource(id = R.string.editIconContactDetailsPage),
             tint = Color.Unspecified,
             modifier = Modifier
+                .padding(top = 10.dp)
                 .clickable {
 
                 }
                 .constrainAs(editIcon) {
 
-                    top.linkTo(topGuideContactDetailsHeaderIcons)
+                    top.linkTo(backgroundImage.bottom)
                     start.linkTo(startGuideEditIcon)
 
                 }
         )
 
-        LazyColumn(content = ){
+    }
+
+}
+
+@Composable
+fun Body(contactDetailViewModel: ContactDetailViewModel) {
+
+    LazyColumn(modifier = Modifier) {
+
+        items(
+            contactDetailViewModel.contactDetailDataList.value!!,
+            key = { it.infoTitle }) { contactDetail ->
+
+            ContactDetail(contactDetail = contactDetail)
 
         }
 
+    }
+
+}
+
+@Composable
+fun ContactDetail(contactDetail: ContactDetailData) {
+
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(
+                10.dp
+            ), verticalAlignment = Alignment.CenterVertically
+    ) {
+
+        Column(modifier = Modifier.weight(0.2f)) {
+
+            if (!contactDetail.showImage) {
+
+                Image(
+                    modifier = Modifier,
+                    painter = painterResource(id = contactDetail.iconResource),
+                    contentDescription = stringResource(
+                        id = R.string.detailContactHeaderWallpaper
+                    )
+                )
+
+            }
+
+            Spacer(modifier = Modifier.size(20.dp))
+
+        }
+
+        Column(modifier = Modifier.weight(0.75f)) {
+
+            Text(
+                text = stringResource(id = contactDetail.infoTitle),
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Light
+            )
+
+            Spacer(modifier = Modifier.size(10.dp))
+
+            if (!contactDetail.showImage) {
+
+                Text(
+                    text = contactDetail.infoValue,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Spacer(modifier = Modifier.size(30.dp))
+
+                Divider(modifier = Modifier.height(1.dp), color = Color(0xFFBFBFBF))
+
+            } else {
+
+                Image(
+                    painter = painterResource(id = contactDetail.image),
+                    contentDescription = stringResource(
+                        id = R.string.mapImage
+                    )
+                )
+
+            }
+
+        }
 
     }
+
+    Spacer(modifier = Modifier.size(30.dp))
 
 }
 
