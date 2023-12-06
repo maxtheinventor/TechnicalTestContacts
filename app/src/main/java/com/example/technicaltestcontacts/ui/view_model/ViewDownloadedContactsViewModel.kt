@@ -49,6 +49,9 @@ class ViewDownloadedContactsViewModel @Inject constructor(
 
     private val _contactsSaved = MutableLiveData<Boolean>(false)
 
+    private val _goToContactDetailPage = MutableLiveData<Boolean>(false)
+    val goToContactDetailPage: LiveData<Boolean> = _goToContactDetailPage
+
     // DIALOGS
 
     private val _showSavingContactsInAppDialog = MutableLiveData<Boolean>(false)
@@ -57,6 +60,9 @@ class ViewDownloadedContactsViewModel @Inject constructor(
     private val _showCantCantSaveTheSameContactsAgainWarning = MutableLiveData<Boolean>(false)
     val showCantCantSaveTheSameContactsAgainWarning: LiveData<Boolean> =
         _showCantCantSaveTheSameContactsAgainWarning
+
+    private val _userToShowInfoOf = MutableLiveData<UserInfoEntity>()
+    val userToShowInfoOf: LiveData<UserInfoEntity> = _userToShowInfoOf
 
     //----------------------------------------------------------------------------------------------
 
@@ -386,9 +392,22 @@ class ViewDownloadedContactsViewModel @Inject constructor(
 
     }
 
-    fun changeShowCantCantSaveTheSameContactsAgainWarningValue(newValue: Boolean){
+    fun changeShowCantCantSaveTheSameContactsAgainWarningValue(newValue: Boolean) {
 
         _showCantCantSaveTheSameContactsAgainWarning.value = newValue
+
+    }
+
+    fun changeGoToContactDetailPageValue(newValue: Boolean) {
+
+        _goToContactDetailPage.value = newValue
+
+    }
+
+    fun changeUserToShowInfoOfValue(newValue: UserInfoEntity){
+
+        _userToShowInfoOf.value = null
+        _userToShowInfoOf.value = newValue
 
     }
 

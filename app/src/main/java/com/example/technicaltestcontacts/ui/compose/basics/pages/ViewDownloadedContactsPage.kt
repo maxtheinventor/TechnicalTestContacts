@@ -408,7 +408,10 @@ private fun Body(viewDownloadedContactsViewModel: ViewDownloadedContactsViewMode
                     viewDownloadedContactsViewModel.filteredContactList,
                     key = { it.id.value }) { filteredUserData ->
 
-                    ItemContact(filteredUserData)
+                    ItemContact(
+                        resultRandomUser = filteredUserData,
+                        viewDownloadedContactsViewModel = viewDownloadedContactsViewModel
+                    )
 
                 }
 
@@ -416,7 +419,10 @@ private fun Body(viewDownloadedContactsViewModel: ViewDownloadedContactsViewMode
 
                 items(DOWNLOADED_USER_DATA.body()!!.results, key = { it.id.value }) { userData ->
 
-                    ItemContact(userData)
+                    ItemContact(
+                        resultRandomUser = userData,
+                        viewDownloadedContactsViewModel = viewDownloadedContactsViewModel
+                    )
 
                 }
 
@@ -450,11 +456,15 @@ fun NoContactsWithThatSearchCriteria() {
 }
 
 @Composable
-fun ItemContact(resultRandomUser: ResultRandomUser) {
+fun ItemContact(
+    resultRandomUser: ResultRandomUser,
+    viewDownloadedContactsViewModel: ViewDownloadedContactsViewModel
+) {
 
     Row(
         Modifier
             .fillMaxWidth()
+            .clickable {viewDownloadedContactsViewModel.changeGoToContactDetailPageValue(true) }
             .padding(
                 10.dp
             ), verticalAlignment = Alignment.CenterVertically

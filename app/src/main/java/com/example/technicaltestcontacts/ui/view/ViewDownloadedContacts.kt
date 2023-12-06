@@ -1,5 +1,6 @@
 package com.example.technicaltestcontacts.ui.view
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
@@ -12,9 +13,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import com.example.technicaltestcontacts.data.local.entity.UserInfoEntity
 import com.example.technicaltestcontacts.ui.compose.basics.pages.ViewDownloadedContactsPage
 import com.example.technicaltestcontacts.ui.view.ui.theme.TechnicalTestContactsTheme
 import com.example.technicaltestcontacts.ui.view_model.ViewDownloadedContactsViewModel
+import com.example.technicaltestcontacts.util.ExtraNameUtils.Companion.CONTACT_TO_SHOW_DETAIL
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -31,6 +34,7 @@ class ViewDownloadedContacts : ComponentActivity() {
                 ) {
 
                     val goBack by viewDownloadedContactsViewModel.goBack.observeAsState()
+                    val goToContactDetailPage by viewDownloadedContactsViewModel.goToContactDetailPage.observeAsState()
 
                     if (goBack!!) {
 
@@ -42,6 +46,14 @@ class ViewDownloadedContacts : ComponentActivity() {
                         viewDownloadedContactsViewModel = viewDownloadedContactsViewModel
                     )
 
+                    if (goToContactDetailPage!!) {
+
+                        viewDownloadedContactsViewModel.changeGoToContactDetailPageValue(newValue = false)
+                        var intent: Intent = Intent(this, ContactDetail::class.java)
+                        intent.putExtra(CONTACT_TO_SHOW_DETAIL,UserInfoEntity)
+                        startActivity(intent)
+
+                    }
                 }
             }
         }

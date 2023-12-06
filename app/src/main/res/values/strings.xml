@@ -39,4 +39,6 @@
     <string name="savingContactsInApp">Guardando contactos en la APP</string>
     <string name="contactsSaved_E">¡Contactos guardados!</string>
     <string name="savingError_U">ERROR GUARDADO</string>
+    <string name="title_activity_contact_detail">ContactDetail</string>
+    <string name="detailContactHeaderWallpaper">Detail contact header wallpaper</string>
 </resources>
