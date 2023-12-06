@@ -8,6 +8,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.technicaltestcontacts.R
 import com.example.technicaltestcontacts.data.network.response.random_user.RandomUser
 import com.example.technicaltestcontacts.domain.use_cases.network.GetRandomUserUseCaseN
+import com.example.technicaltestcontacts.domain.use_cases.network.GetRandomUserWithQuantityCriteriaUseCaseN
+import com.example.technicaltestcontacts.util.TypesOfRandomDownloadsUtil
+import com.example.technicaltestcontacts.util.TypesOfRandomDownloadsUtil.Companion.QUANTITY_CRITERIA_RANDOM_CONTACTS_DOWNLOAD
+import com.example.technicaltestcontacts.util.TypesOfRandomDownloadsUtil.Companion.REGULAR_RANDOM_CONTACTS_DOWNLOAD
+import com.example.technicaltestcontacts.util.UserInfoGlobal.CONTACTS_HAVE_BEEN_SAVED
 import com.example.technicaltestcontacts.util.UserInfoGlobal.DOWNLOADED_USER_DATA
 import com.example.technicaltestcontacts.util.UserInfoGlobal.SAVED_USER_INFO_ARRAY_LIST
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +23,10 @@ import retrofit2.Response
 import javax.inject.Inject
 
 @HiltViewModel
-class LandingViewModel @Inject constructor(private val getRandomUserUseCaseN: GetRandomUserUseCaseN) :
+class LandingViewModel @Inject constructor(
+    private val getRandomUserUseCaseN: GetRandomUserUseCaseN,
+    private val getRandomUserWithQuantityCriteriaUseCaseN: GetRandomUserWithQuantityCriteriaUseCaseN
+) :
     ViewModel() {
 
     private val _closeApp = MutableLiveData<Boolean>(false)
@@ -63,15 +71,20 @@ class LandingViewModel @Inject constructor(private val getRandomUserUseCaseN: Ge
     private val _goToViewDownloadedContacts = MutableLiveData<Boolean>(false)
     val goToViewDownloadedContacts: LiveData<Boolean> = _goToViewDownloadedContacts
 
+    private val _showFeatureNotReadyYet = MutableLiveData<Boolean>(false)
+    val showFeatureNotReadyYet: LiveData<Boolean> = _showFeatureNotReadyYet
+
     fun initViewSavedContacts() {
 
-        if (SAVED_USER_INFO_ARRAY_LIST.isEmpty()) {
+        if (!CONTACTS_HAVE_BEEN_SAVED) {
 
             changeShowNoSavedContactsToastValue(newValue = true)
 
         } else {
 
-            changeShowSavedContactsPageValue(newValue = true)
+            //TODO
+            //changeShowSavedContactsPageValue(newValue = true)
+            changeShowFeatureNotReadyYetValue(newValue = true)
 
         }
 
@@ -95,7 +108,7 @@ class LandingViewModel @Inject constructor(private val getRandomUserUseCaseN: Ge
 
     }
 
-    fun initUserRandomSearch() {
+    fun initAnyTypeOfUserRandomSearch(typeOfRandomDownload: String) {
 
         viewModelScope.launch {
 
@@ -104,7 +117,24 @@ class LandingViewModel @Inject constructor(private val getRandomUserUseCaseN: Ge
             val job = CoroutineScope(Dispatchers.IO).launch {
                 try {
 
-                    val response = getRandomUserUseCaseN.invoke()
+                    lateinit var response: Response<RandomUser>
+
+                    when (typeOfRandomDownload) {
+
+                        REGULAR_RANDOM_CONTACTS_DOWNLOAD -> {
+
+                            response = getRandomUserUseCaseN.invoke()
+
+                        }
+
+                        QUANTITY_CRITERIA_RANDOM_CONTACTS_DOWNLOAD -> {
+
+                            response =
+                                getRandomUserWithQuantityCriteriaUseCaseN.invoke(quantityCriteria = numberOfContactsToSearch.value!!.toInt())
+
+                        }
+
+                    }
 
                     if (response.isSuccessful) {
 
@@ -158,8 +188,7 @@ class LandingViewModel @Inject constructor(private val getRandomUserUseCaseN: Ge
 
                 changeErrorInNumberOfContactsToSearchValue(false)
                 changeShowDownloadProgressBarValue(true)
-                //TODO: Do search
-
+                initAnyTypeOfUserRandomSearch(typeOfRandomDownload = QUANTITY_CRITERIA_RANDOM_CONTACTS_DOWNLOAD)
             }
 
         } catch (e: Exception) {
@@ -228,6 +257,12 @@ class LandingViewModel @Inject constructor(private val getRandomUserUseCaseN: Ge
     fun changeGoToViewDownloadedContactsValue(newValue: Boolean) {
 
         _goToViewDownloadedContacts.postValue(newValue)
+
+    }
+
+    fun changeShowFeatureNotReadyYetValue(newValue: Boolean){
+
+        _showFeatureNotReadyYet.value = newValue
 
     }
 

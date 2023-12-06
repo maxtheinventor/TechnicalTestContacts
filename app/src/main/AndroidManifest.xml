@@ -22,7 +22,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.TechnicalTestContacts" />
         <activity
-            android:name=".ui.view.ViewDownloadedContacts"
+            android:name=".ui.view.DownloadedContacts"
             android:exported="false"
             android:label="@string/title_activity_view_downloaded_contacts"
             android:screenOrientation="portrait"

@@ -23,7 +23,7 @@ import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
-class ViewDownloadedContactsViewModel @Inject constructor(
+class DownloadedContactsViewModel @Inject constructor(
     private val insertUserInUserInfoTableUseCaseL: InsertUserInUserInfoTableUseCaseL
 ) : ViewModel() {
 
@@ -347,6 +347,7 @@ class ViewDownloadedContactsViewModel @Inject constructor(
                 changeBlurDpValue()
                 changeShowDropDownMenuValue()
                 changeShowSavingContactsInAppDialogValue()
+                UserInfoGlobal.CONTACTS_HAVE_BEEN_SAVED = true
                 changeShowSavedContactsSuccessfullyToastValue(newValue = true)
 
             }

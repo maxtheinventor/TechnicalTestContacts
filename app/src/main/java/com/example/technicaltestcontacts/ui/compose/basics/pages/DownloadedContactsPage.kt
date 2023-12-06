@@ -48,39 +48,39 @@ import com.example.technicaltestcontacts.data.network.response.random_user.Resul
 import com.example.technicaltestcontacts.ui.compose.basics.alert_dialogs.CantSaveTheSameContactsAgainWarning
 import com.example.technicaltestcontacts.ui.compose.basics.texts.BasicOutlinedText
 import com.example.technicaltestcontacts.ui.theme.ButtonBlue
-import com.example.technicaltestcontacts.ui.view_model.ViewDownloadedContactsViewModel
+import com.example.technicaltestcontacts.ui.view_model.DownloadedContactsViewModel
 import com.example.technicaltestcontacts.util.ToastUtils
 import com.example.technicaltestcontacts.util.UserInfoGlobal.DOWNLOADED_USER_DATA
 
 @Composable
 fun ViewDownloadedContactsPage(
-    viewDownloadedContactsViewModel: ViewDownloadedContactsViewModel
+    downloadedContactsViewModel: DownloadedContactsViewModel
 ) {
 
-    val blurDp by viewDownloadedContactsViewModel.blurDp.observeAsState()
-    val showFieldErrorToast by viewDownloadedContactsViewModel.showFieldErrorToast.observeAsState()
-    val showSavedContactsSuccessfullyToast by viewDownloadedContactsViewModel.showSavedContactsSuccessfullyToast.observeAsState()
-    val showSavingContactsInAppDialog by viewDownloadedContactsViewModel.showSavingContactsInAppDialog.observeAsState()
-    val showCantCantSaveTheSameContactsAgainWarning by viewDownloadedContactsViewModel.showCantCantSaveTheSameContactsAgainWarning.observeAsState()
+    val blurDp by downloadedContactsViewModel.blurDp.observeAsState()
+    val showFieldErrorToast by downloadedContactsViewModel.showFieldErrorToast.observeAsState()
+    val showSavedContactsSuccessfullyToast by downloadedContactsViewModel.showSavedContactsSuccessfullyToast.observeAsState()
+    val showSavingContactsInAppDialog by downloadedContactsViewModel.showSavingContactsInAppDialog.observeAsState()
+    val showCantCantSaveTheSameContactsAgainWarning by downloadedContactsViewModel.showCantCantSaveTheSameContactsAgainWarning.observeAsState()
 
     if (showFieldErrorToast!!) {
 
         ToastUtils.theFieldsCantContainErrors(LocalContext.current)
-        viewDownloadedContactsViewModel.changeShowFieldErrorToastValue(newValue = false)
+        downloadedContactsViewModel.changeShowFieldErrorToastValue(newValue = false)
 
     }
 
     if (showSavedContactsSuccessfullyToast!!) {
 
         ToastUtils.contactsSavedSuccessfully(LocalContext.current)
-        viewDownloadedContactsViewModel.changeShowSavedContactsSuccessfullyToastValue(newValue = false)
+        downloadedContactsViewModel.changeShowSavedContactsSuccessfullyToastValue(newValue = false)
 
     }
 
     if (showCantCantSaveTheSameContactsAgainWarning!!) {
 
         CantSaveTheSameContactsAgainWarning(continueButton = {
-            viewDownloadedContactsViewModel.changeShowCantCantSaveTheSameContactsAgainWarningValue(
+            downloadedContactsViewModel.changeShowCantCantSaveTheSameContactsAgainWarningValue(
                 newValue = false
             )
         })
@@ -136,10 +136,10 @@ fun ViewDownloadedContactsPage(
             ) {
 
                 Header(
-                    viewDownloadedContactsViewModel = viewDownloadedContactsViewModel
+                    downloadedContactsViewModel = downloadedContactsViewModel
                 )
 
-                Body(viewDownloadedContactsViewModel = viewDownloadedContactsViewModel)
+                Body(downloadedContactsViewModel = downloadedContactsViewModel)
 
             }
 
@@ -151,32 +151,32 @@ fun ViewDownloadedContactsPage(
 
 @Composable
 private fun Header(
-    viewDownloadedContactsViewModel: ViewDownloadedContactsViewModel
+    downloadedContactsViewModel: DownloadedContactsViewModel
 ) {
 
-    val showSearchOptions by viewDownloadedContactsViewModel.showSearchOptions.observeAsState()
+    val showSearchOptions by downloadedContactsViewModel.showSearchOptions.observeAsState()
 
     Column {
 
         TopBar(
-            viewDownloadedContactsViewModel = viewDownloadedContactsViewModel
+            downloadedContactsViewModel = downloadedContactsViewModel
         )
 
         if (showSearchOptions!!) {
 
             SearchFields(
-                viewDownloadedContactsViewModel = viewDownloadedContactsViewModel,
+                downloadedContactsViewModel = downloadedContactsViewModel,
                 nameToSearchOnTextChanged = {
-                    viewDownloadedContactsViewModel.onNameToSearchChange(
+                    downloadedContactsViewModel.onNameToSearchChange(
                         it
                     )
                 },
                 emailToSearchOnTextChanged = {
-                    viewDownloadedContactsViewModel.onEmailToSearchChange(
+                    downloadedContactsViewModel.onEmailToSearchChange(
                         it
                     )
                 },
-                doSearch = { viewDownloadedContactsViewModel.doFilterSearch() }
+                doSearch = { downloadedContactsViewModel.doFilterSearch() }
             )
 
         }
@@ -186,14 +186,14 @@ private fun Header(
 }
 
 @Composable
-fun TopBar(
-    viewDownloadedContactsViewModel: ViewDownloadedContactsViewModel
+private fun TopBar(
+    downloadedContactsViewModel: DownloadedContactsViewModel
 ) {
 
-    val showDropDownMenu by viewDownloadedContactsViewModel.showDropDownMenu.observeAsState()
+    val showDropDownMenu by downloadedContactsViewModel.showDropDownMenu.observeAsState()
 
     var painterResourceForSearchButton =
-        if (viewDownloadedContactsViewModel.showSearchOptions.value!!) {
+        if (downloadedContactsViewModel.showSearchOptions.value!!) {
 
             R.drawable.close_red
 
@@ -222,7 +222,7 @@ fun TopBar(
                 contentDescription = stringResource(id = R.string.goBack),
                 tint = Color.Unspecified,
                 modifier = Modifier.clickable {
-                    viewDownloadedContactsViewModel.changeGoBackValue(
+                    downloadedContactsViewModel.changeGoBackValue(
                         true
                     )
                 }
@@ -249,7 +249,7 @@ fun TopBar(
                 painter = painterResource(id = painterResourceForSearchButton),
                 contentDescription = stringResource(id = R.string.contactSearchOptions),
                 tint = Color.Unspecified,
-                modifier = Modifier.clickable { viewDownloadedContactsViewModel.changeShowSearchOptionsValue() }
+                modifier = Modifier.clickable { downloadedContactsViewModel.changeShowSearchOptionsValue() }
             )
 
             Spacer(modifier = Modifier.size(15.dp))
@@ -259,16 +259,16 @@ fun TopBar(
                 contentDescription = stringResource(id = R.string.contactsPageActions),
                 tint = Color.Unspecified,
                 modifier = Modifier.clickable {
-                    viewDownloadedContactsViewModel.changeBlurDpValue()
-                    viewDownloadedContactsViewModel.changeShowDropDownMenuValue()
+                    downloadedContactsViewModel.changeBlurDpValue()
+                    downloadedContactsViewModel.changeShowDropDownMenuValue()
                 }
             )
 
             DropdownMenu(
                 expanded = showDropDownMenu!!,
                 onDismissRequest = {
-                    viewDownloadedContactsViewModel.changeBlurDpValue()
-                    viewDownloadedContactsViewModel.changeShowDropDownMenuValue()
+                    downloadedContactsViewModel.changeBlurDpValue()
+                    downloadedContactsViewModel.changeShowDropDownMenuValue()
                 },
             ) {
 
@@ -276,7 +276,7 @@ fun TopBar(
                     text = { Text(stringResource(id = R.string.saveContactsInApp)) },
                     onClick = {
 
-                        viewDownloadedContactsViewModel.saveContactsInApp()
+                        downloadedContactsViewModel.saveContactsInApp()
 
                     }
                 )
@@ -290,20 +290,20 @@ fun TopBar(
 }
 
 @Composable
-fun SearchFields(
-    viewDownloadedContactsViewModel: ViewDownloadedContactsViewModel,
+private fun SearchFields(
+    downloadedContactsViewModel: DownloadedContactsViewModel,
     nameToSearchOnTextChanged: (String) -> Unit,
     emailToSearchOnTextChanged: (String) -> Unit,
     doSearch: () -> Unit
 ) {
 
-    val nameToSearch by viewDownloadedContactsViewModel.nameToSearch.observeAsState()
-    val errorInNameToSearch by viewDownloadedContactsViewModel.errorInNameToSearch.observeAsState()
-    val nameToSearchError by viewDownloadedContactsViewModel.nameToSearchError.observeAsState()
+    val nameToSearch by downloadedContactsViewModel.nameToSearch.observeAsState()
+    val errorInNameToSearch by downloadedContactsViewModel.errorInNameToSearch.observeAsState()
+    val nameToSearchError by downloadedContactsViewModel.nameToSearchError.observeAsState()
 
-    val emailToSearch by viewDownloadedContactsViewModel.emailToSearch.observeAsState()
-    val errorInEmailToSearch by viewDownloadedContactsViewModel.errorInEmailToSearch.observeAsState()
-    val emailToSearchError by viewDownloadedContactsViewModel.emailToSearchError.observeAsState()
+    val emailToSearch by downloadedContactsViewModel.emailToSearch.observeAsState()
+    val errorInEmailToSearch by downloadedContactsViewModel.errorInEmailToSearch.observeAsState()
+    val emailToSearchError by downloadedContactsViewModel.emailToSearchError.observeAsState()
 
     Column {
 
@@ -328,7 +328,7 @@ fun SearchFields(
                 contentDescription = stringResource(id = R.string.deleteFieldContent),
                 tint = Color.Unspecified,
                 modifier = Modifier
-                    .clickable { viewDownloadedContactsViewModel.clearNameToSearchField() }
+                    .clickable { downloadedContactsViewModel.clearNameToSearchField() }
                     .weight(0.1f)
 
             )
@@ -355,7 +355,7 @@ fun SearchFields(
                 contentDescription = stringResource(id = R.string.deleteFieldContent),
                 tint = Color.Unspecified,
                 modifier = Modifier
-                    .clickable { viewDownloadedContactsViewModel.clearEmailToSearchField() }
+                    .clickable { downloadedContactsViewModel.clearEmailToSearchField() }
                     .weight(0.1f)
             )
 
@@ -389,10 +389,10 @@ fun SearchFields(
 }
 
 @Composable
-private fun Body(viewDownloadedContactsViewModel: ViewDownloadedContactsViewModel) {
+private fun Body(downloadedContactsViewModel: DownloadedContactsViewModel) {
 
-    val listHasFilters by viewDownloadedContactsViewModel.listHasFilters.observeAsState()
-    val filtersAreCorrect by viewDownloadedContactsViewModel.filtersAreCorrect.observeAsState()
+    val listHasFilters by downloadedContactsViewModel.listHasFilters.observeAsState()
+    val filtersAreCorrect by downloadedContactsViewModel.filtersAreCorrect.observeAsState()
 
     if (listHasFilters!! && !filtersAreCorrect!!) {
 
@@ -405,12 +405,12 @@ private fun Body(viewDownloadedContactsViewModel: ViewDownloadedContactsViewMode
             if (listHasFilters!! && filtersAreCorrect!!) {
 
                 items(
-                    viewDownloadedContactsViewModel.filteredContactList,
+                    downloadedContactsViewModel.filteredContactList,
                     key = { it.id.value }) { filteredUserData ->
 
                     ItemContact(
                         resultRandomUser = filteredUserData,
-                        viewDownloadedContactsViewModel = viewDownloadedContactsViewModel
+                        downloadedContactsViewModel = downloadedContactsViewModel
                     )
 
                 }
@@ -421,7 +421,7 @@ private fun Body(viewDownloadedContactsViewModel: ViewDownloadedContactsViewMode
 
                     ItemContact(
                         resultRandomUser = userData,
-                        viewDownloadedContactsViewModel = viewDownloadedContactsViewModel
+                        downloadedContactsViewModel = downloadedContactsViewModel
                     )
 
                 }
@@ -436,7 +436,7 @@ private fun Body(viewDownloadedContactsViewModel: ViewDownloadedContactsViewMode
 }
 
 @Composable
-fun NoContactsWithThatSearchCriteria() {
+private fun NoContactsWithThatSearchCriteria() {
 
     Column(
         verticalArrangement = Arrangement.Center,
@@ -456,9 +456,9 @@ fun NoContactsWithThatSearchCriteria() {
 }
 
 @Composable
-fun ItemContact(
+private fun ItemContact(
     resultRandomUser: ResultRandomUser,
-    viewDownloadedContactsViewModel: ViewDownloadedContactsViewModel
+    downloadedContactsViewModel: DownloadedContactsViewModel
 ) {
 
     var fullName = resultRandomUser.name.first + " " + resultRandomUser.name.last
@@ -467,8 +467,8 @@ fun ItemContact(
         Modifier
             .fillMaxWidth()
             .clickable {
-                viewDownloadedContactsViewModel.changeUserToShowInfoOfValue(resultRandomUser)
-                viewDownloadedContactsViewModel.changeGoToContactDetailPageValue(true) }
+                downloadedContactsViewModel.changeUserToShowInfoOfValue(resultRandomUser)
+                downloadedContactsViewModel.changeGoToContactDetailPageValue(true) }
             .padding(
                 10.dp
             ), verticalAlignment = Alignment.CenterVertically

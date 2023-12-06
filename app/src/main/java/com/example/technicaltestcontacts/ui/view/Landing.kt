@@ -2,7 +2,6 @@ package com.example.technicaltestcontacts.ui.view
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
@@ -13,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import com.example.technicaltestcontacts.ui.compose.basics.alert_dialogs.FeatureNotReadyYetInfo
 import com.example.technicaltestcontacts.ui.compose.basics.pages.LandingPage
 import com.example.technicaltestcontacts.ui.view.ui.theme.TechnicalTestContactsTheme
 import com.example.technicaltestcontacts.ui.view_model.LandingViewModel
@@ -37,22 +37,34 @@ class Landing : ComponentActivity() {
 
                     val showSavedContactsPage by landingViewModel.showSavedContactsPage.observeAsState()
                     val goToViewDownloadedContacts by landingViewModel.goToViewDownloadedContacts.observeAsState()
+                    val showFeatureNotReadyYet by landingViewModel.showFeatureNotReadyYet.observeAsState()
 
                     LandingPage(landingViewModel = landingViewModel)
 
                     if (showSavedContactsPage!!) {
 
+                        /*
                         val intent: Intent = Intent(this, SavedContacts::class.java)
                         startActivity(intent)
+                         */
 
                     } else if (goToViewDownloadedContacts!!) {
 
                         landingViewModel.changeGoToViewDownloadedContactsValue(newValue = false)
                         ToastUtils.downloadCompleted(this)
-                        val intent: Intent = Intent(this, ViewDownloadedContacts::class.java)
+                        val intent: Intent = Intent(this, DownloadedContacts::class.java)
                         startActivity(intent)
 
+                    } else if (showFeatureNotReadyYet!!) {
+
+                        FeatureNotReadyYetInfo(
+                            customMessage = "De todas maneras los contactos que decidio guardar han sido guardados en la APP con exito :)",
+                            closeDialog = {
+                                landingViewModel.changeShowFeatureNotReadyYetValue(false)
+                            })
+
                     }
+
                 }
             }
         }

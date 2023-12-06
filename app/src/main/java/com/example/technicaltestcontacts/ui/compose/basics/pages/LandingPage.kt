@@ -1,7 +1,6 @@
 package com.example.technicaltestcontacts.ui.compose.basics.pages
 
 import android.app.Activity
-import android.widget.ProgressBar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -47,6 +46,7 @@ import com.example.technicaltestcontacts.ui.theme.ButtonBlue
 import com.example.technicaltestcontacts.ui.theme.ButtonGreen
 import com.example.technicaltestcontacts.ui.view_model.LandingViewModel
 import com.example.technicaltestcontacts.util.ToastUtils
+import com.example.technicaltestcontacts.util.TypesOfRandomDownloadsUtil
 
 @Composable
 fun LandingPage(landingViewModel: LandingViewModel) {
@@ -207,7 +207,7 @@ private fun ContactSearch(landingViewModel: LandingViewModel) {
             Spacer(modifier = Modifier.size(36.dp))
             SearchButton(searchButtonClicked = { landingViewModel.initUserSearchWithNumberCriteria() })
             Spacer(modifier = Modifier.size(20.dp))
-            RandomSearchButton(randomSearchButtonClicked = { landingViewModel.initUserRandomSearch() })
+            RandomSearchButton(randomSearchButtonClicked = { landingViewModel.initAnyTypeOfUserRandomSearch(typeOfRandomDownload = TypesOfRandomDownloadsUtil.REGULAR_RANDOM_CONTACTS_DOWNLOAD) })
             Spacer(modifier = Modifier.size(24.dp))
 
         }

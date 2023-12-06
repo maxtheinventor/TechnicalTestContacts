@@ -13,4 +13,10 @@ class RandomUserRepositoryN @Inject constructor(private val api: RandomUserServi
 
     }
 
+    suspend fun doRandoUserDownloadWithQuantityCriteria(quantityCriteria: Int): Response<RandomUser>{
+
+        return api.doRandomUserDownloadWithQuantityCriteria(quantityCriteria)
+
+    }
+
 }
