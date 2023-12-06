@@ -464,7 +464,9 @@ fun ItemContact(
     Row(
         Modifier
             .fillMaxWidth()
-            .clickable {viewDownloadedContactsViewModel.changeGoToContactDetailPageValue(true) }
+            .clickable {
+                viewDownloadedContactsViewModel.changeUserToShowInfoOfValue(resultRandomUser)
+                viewDownloadedContactsViewModel.changeGoToContactDetailPageValue(true) }
             .padding(
                 10.dp
             ), verticalAlignment = Alignment.CenterVertically

@@ -35,6 +35,7 @@ class ViewDownloadedContacts : ComponentActivity() {
 
                     val goBack by viewDownloadedContactsViewModel.goBack.observeAsState()
                     val goToContactDetailPage by viewDownloadedContactsViewModel.goToContactDetailPage.observeAsState()
+                    val userToShowInfoOf by viewDownloadedContactsViewModel.userToShowInfoOf.observeAsState()
 
                     if (goBack!!) {
 
@@ -50,10 +51,11 @@ class ViewDownloadedContacts : ComponentActivity() {
 
                         viewDownloadedContactsViewModel.changeGoToContactDetailPageValue(newValue = false)
                         var intent: Intent = Intent(this, ContactDetail::class.java)
-                        intent.putExtra(CONTACT_TO_SHOW_DETAIL,UserInfoEntity)
+                        intent.putExtra(CONTACT_TO_SHOW_DETAIL, userToShowInfoOf)
                         startActivity(intent)
 
                     }
+
                 }
             }
         }

@@ -327,26 +327,13 @@ class ViewDownloadedContactsViewModel @Inject constructor(
             viewModelScope.launch(Dispatchers.IO) {
 
                 delay(1500)
+                lateinit var userInfoEntity: UserInfoEntity
 
                 val job = CoroutineScope(Dispatchers.IO).launch {
 
                     for (contact in UserInfoGlobal.DOWNLOADED_USER_DATA.body()!!.results) {
 
-                        val instant = Instant.parse(contact.registered.date)
-                        val dateTime = instant.atZone(ZoneId.of("UTC")).toLocalDateTime()
-                        val formattedDate =
-                            dateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-
-                        var userInfoEntity = UserInfoEntity(
-                            firstName = contact.name.first,
-                            lastName = contact.name.last,
-                            age = contact.registered.age.toString(),
-                            gender = contact.gender,
-                            registerDate = formattedDate,
-                            phoneNumber = contact.phone,
-                            latitude = contact.location.coordinates.latitude,
-                            longitude = contact.location.coordinates.longitude
-                        )
+                        userInfoEntity = convertDownloadedUserToUserInfoEntity(contact = contact)
 
                         insertUserInUserInfoTableUseCaseL.invoke(userInfoEntity = userInfoEntity)
 
@@ -371,6 +358,31 @@ class ViewDownloadedContactsViewModel @Inject constructor(
             changeShowCantCantSaveTheSameContactsAgainWarningValue(true)
 
         }
+
+    }
+
+    private fun convertDownloadedUserToUserInfoEntity(contact: ResultRandomUser): UserInfoEntity {
+
+        lateinit var result: UserInfoEntity
+
+        val instant = Instant.parse(contact.registered.date)
+        val dateTime = instant.atZone(ZoneId.of("UTC")).toLocalDateTime()
+        val formattedDate =
+            dateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+
+        result = UserInfoEntity(
+            firstName = contact.name.first,
+            lastName = contact.name.last,
+            age = contact.registered.age.toString(),
+            gender = contact.gender,
+            registerDate = formattedDate,
+            phoneNumber = contact.phone,
+            latitude = contact.location.coordinates.latitude,
+            longitude = contact.location.coordinates.longitude,
+            imageLarge = contact.picture.large
+        )
+
+        return result
 
     }
 
@@ -404,10 +416,10 @@ class ViewDownloadedContactsViewModel @Inject constructor(
 
     }
 
-    fun changeUserToShowInfoOfValue(newValue: UserInfoEntity){
+    fun changeUserToShowInfoOfValue(newValue: ResultRandomUser) {
 
         _userToShowInfoOf.value = null
-        _userToShowInfoOf.value = newValue
+        _userToShowInfoOf.value = convertDownloadedUserToUserInfoEntity(newValue)
 
     }
 

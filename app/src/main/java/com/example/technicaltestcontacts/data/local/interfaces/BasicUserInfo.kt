@@ -10,5 +10,6 @@ interface BasicUserInfo {
     var phoneNumber: String
     var latitude: String
     var longitude: String
+    var imageLarge: String
 
 }

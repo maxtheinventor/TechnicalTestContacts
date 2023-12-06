@@ -41,4 +41,7 @@
     <string name="savingError_U">ERROR GUARDADO</string>
     <string name="title_activity_contact_detail">ContactDetail</string>
     <string name="detailContactHeaderWallpaper">Detail contact header wallpaper</string>
+    <string name="contactDetailsPageActions">Contact detail page actions</string>
+    <string name="cameraIconContactDetailsPage">Camera icon contact details page</string>
+    <string name="editIconContactDetailsPage">Edit icon contact details page</string>
 </resources>
