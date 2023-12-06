@@ -21,4 +21,6 @@ v1.0
   - He incluido un PDF en inglés adjuntado en el correo con mi diseño inicial de la APP para que veais un poco parte de mi proceso de creación de APPs (Figma tambien se usarlo también, pero aquí me habeis dado ya los deberes hechos).
  
 
+
+
 ¡Muchas gracias por tu lectura!
